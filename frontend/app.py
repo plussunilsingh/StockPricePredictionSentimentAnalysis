@@ -4,7 +4,7 @@ import pandas as pd
 import yfinance as yf
 
 # Configuration for Backend API Request
-BACKEND_URL = "http://localhost:8080/api/prediction/predict"
+BACKEND_URL = "http://localhost:8000/predict"
 
 st.set_page_config(page_title="Stock Prediction Dashboard", layout="wide")
 
