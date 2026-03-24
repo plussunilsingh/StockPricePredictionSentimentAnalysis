@@ -1,0 +1,13 @@
+
+- This should be loose coupled and layerd app which has interfaces and abstract class for keeping this app code clean and maintainable.
+- This app should be able to predict the stock price movement based on the news and social media
+- HEre we need to use Java app naming convention for variables, methods and classes. We should also use design patterns like factory pattern, strategy pattern and observer pattern to make this app more maintainable and scalable.
+- we need to act as a AI team which check all things like data collection, data preprocessing, feature engineering, model training and evaluation, and deployment of the model in production.
+- we need to use LSTM model for time series forecasting and sentiment analysis for news and social media data.
+- we need to use streamlit for creating a dashboard for visualizing the predictions and allowing users to interact with the model.
+- we need to use python for implementing the machine learning part and java for implementing the backend part of the app.
+- we need to keep streamlit code as loose coupled as possible so it future can be easily replaced with any other frontend framework if needed.
+- we need to use git for version control and github for hosting the code and documentation of the project.
+- we need to use agile methodology for managing the project and delivering the features in iterations.
+- we need to keep in mind the limitations of the model and the market and communicate that clearly to the users of the app.
+- 
