@@ -10,12 +10,12 @@ start_services() {
     echo "➡ Starting Backend Service (Port 8000)..."
     cd "$ROOT_DIR" || exit
     export PYTHONPATH="$ROOT_DIR"
-    nohup uvicorn com.stockprediction.backend.main:app --host 0.0.0.0 --port 8000 > "$ROOT_DIR/backend.log" 2>&1 &
+    nohup "$ROOT_DIR/venv/bin/uvicorn" com.stockprediction.backend.main:app --host 0.0.0.0 --port 8000 > "$ROOT_DIR/backend.log" 2>&1 &
     
     # Start Frontend Service (Streamlit)
     echo "➡ Starting Frontend Service (Port 8501)..."
     cd "$ROOT_DIR/com/stockprediction/frontend" || exit
-    nohup streamlit run app.py > "$ROOT_DIR/frontend.log" 2>&1 &
+    nohup "$ROOT_DIR/venv/bin/streamlit" run app.py > "$ROOT_DIR/frontend.log" 2>&1 &
     
     cd "$ROOT_DIR" || exit
     echo "✅ All services have been started in the background."
