@@ -2,5 +2,9 @@
 #.idea
 .idea/
 
+#python lib
+venv/
+
+
 backend.log
 frontend.log
