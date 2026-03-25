@@ -3,16 +3,16 @@ import pandas as pd
 from .lstm_model import LSTMModelPredictor
 
 class ModelTrainer:
-    \"\"\"
+    """
     Handles preparation of sequences and training the model.
-    \"\"\"
+    """
     def __init__(self, sequenceLength: int = 10):
         self.sequenceLength = sequenceLength
 
     def createSequences(self, data: pd.DataFrame, targetColumn: str = 'Close'):
-        \"\"\"
+        """
         Creates sequences of length `sequenceLength` to predict UP(1) or DOWN(0) of `targetColumn`.
-        \"\"\"
+        """
         featureCols = [col for col in data.columns if col not in ['Date', 'Headline', targetColumn, 'Target', 'Next_Close']]
         # Re-insert targetColumn as part of features
         featureCols.append(targetColumn)

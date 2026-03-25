@@ -6,9 +6,9 @@ class DataType(Enum):
     NEWS = 2
 
 class DataCollectorFactory:
-    \"\"\"
+    """
     Factory to retrieve the appropriate DataCollectionStrategy.
-    \"\"\"
+    """
     @staticmethod
     def getCollector(dataType: DataType) -> DataCollectionStrategy:
         if dataType == DataType.STOCK:

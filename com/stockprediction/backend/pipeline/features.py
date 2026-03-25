@@ -1,9 +1,9 @@
 import pandas as pd
 
 class FeatureEngineer:
-    \"\"\"
+    """
     Generates technical and sentiment features for the model.
-    \"\"\"
+    """
     @staticmethod
     def addMovingAverage(data: pd.DataFrame, column: str, window: int) -> pd.DataFrame:
         data[f'MA_{window}'] = data[column].rolling(window=window).mean()
@@ -20,9 +20,9 @@ class FeatureEngineer:
         
     @staticmethod
     def mergeSentiment(stockData: pd.DataFrame, newsData: pd.DataFrame, sentimentAnalyzer) -> pd.DataFrame:
-        \"\"\"
+        """
         Analyzes news sentiment and merges it into the stock data based on date.
-        \"\"\"
+        """
         if not newsData.empty and 'Headline' in newsData.columns and 'Date' in newsData.columns:
             newsData['Sentiment_Score'] = newsData['Headline'].apply(lambda x: sentimentAnalyzer.analyzeText(str(x)))
             # Group by Date and average sentiment for the day

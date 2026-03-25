@@ -3,17 +3,17 @@ import pandas as pd
 import yfinance as yf
 
 class DataCollectionStrategy(ABC):
-    \"\"\"
+    """
     Abstract Base Class for Data Collection Strategies.
-    \"\"\"
+    """
     @abstractmethod
     def collectData(self, symbol: str, startDate: str, endDate: str) -> pd.DataFrame:
         pass
 
 class StockDataCollector(DataCollectionStrategy):
-    \"\"\"
+    """
     Concrete Strategy for collecting historical stock data via yfinance.
-    \"\"\"
+    """
     def collectData(self, symbol: str, startDate: str, endDate: str) -> pd.DataFrame:
         print(f"Collecting stock data for {symbol} from {startDate} to {endDate}")
         stockData = yf.download(symbol, start=startDate, end=endDate)
@@ -26,9 +26,9 @@ class StockDataCollector(DataCollectionStrategy):
         return stockData
 
 class NewsDataCollector(DataCollectionStrategy):
-    \"\"\"
+    """
     Concrete Strategy for collecting News data.
-    \"\"\"
+    """
     def __init__(self, apiKey: str = ""):
         self.apiKey = apiKey
 

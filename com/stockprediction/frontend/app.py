@@ -34,14 +34,14 @@ if st.sidebar.button("Predict"):
                 col1.metric("Predicted Movement", prediction)
                 col2.metric("Model Confidence", f"{confidence * 100:.1f}%")
                 
-                decision_color = "green" if decision == "BUY" else "red" if decision == "SELL" else "orange"
-                col3.markdown(f"<h3 style='text-align: center; color: {decision_color};'>Decision: {decision}</h3>", unsafe_allow_html=True)
+                decisionColor = "green" if decision == "BUY" else "red" if decision == "SELL" else "orange"
+                col3.markdown(f"<h3 style='text-align: center; color: {decisionColor};'>Decision: {decision}</h3>", unsafe_allow_html=True)
                 
                 # Render chart using simple yfinance pull just for visualization
                 st.write("---")
                 st.subheader("Recent Price Trend (1 Month)")
-                stock_data = yf.download(symbol, period="1mo")
-                st.line_chart(stock_data['Close'])
+                stockData = yf.download(symbol, period="1mo")
+                st.line_chart(stockData['Close'])
             else:
                 st.error(f"Failed to fetch prediction from backend API. Status code: {response.status_code}")
                 

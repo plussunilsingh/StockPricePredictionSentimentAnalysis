@@ -3,9 +3,9 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 
 class LSTMModelPredictor:
-    \"\"\"
+    """
     LSTM Model for Stock Price Prediction (UP or DOWN).
-    \"\"\"
+    """
     def __init__(self, inputShape=None, loadPath=None):
         if loadPath:
             self.loadModel(loadPath)

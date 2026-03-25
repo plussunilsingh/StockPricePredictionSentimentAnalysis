@@ -17,11 +17,11 @@ class PredictionResponse(BaseModel):
     decision: str
 
 @app.get("/")
-def read_root():
+def readRoot():
     return {"message": "Stock Prediction ML API is running!"}
 
 @app.post("/predict", response_model=PredictionResponse)
-def get_prediction(req: PredictionRequest):
+def getPrediction(req: PredictionRequest):
     # This acts as an orchestrator for the strategy patterns.
     # In a real scenario, this would load the trained model and output a prediction based on live inputs.
     
