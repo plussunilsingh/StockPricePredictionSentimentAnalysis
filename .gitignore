@@ -2,3 +2,5 @@
 #.idea
 .idea/
 
+backend.log
+frontend.log
