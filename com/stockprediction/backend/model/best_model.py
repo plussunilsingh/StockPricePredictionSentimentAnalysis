@@ -1,44 +1,55 @@
-from sklearn.ensemble import RandomForestClassifier
 import joblib
 import os
 import pandas as pd
 import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from com.stockprediction.config.AppConfig import config
+
+logger = config.getLogger("RandomForestModel")
 
 class RandomForestModelPredictor:
-    """
-    Random Forest Classifier for Stock Price Prediction.
-    """
-    def __init__(self, loadPath=None):
+    _instance = None
+    _model = None
+
+    def __new__(cls, loadPath: str = None):
+        if cls._instance is None:
+            cls._instance = super(RandomForestModelPredictor, cls).__new__(cls)
+            cls._instance._loadModel(loadPath)
+        return cls._instance
+
+    def _loadModel(self, loadPath: str):
         if loadPath and os.path.exists(loadPath):
-            self.model = joblib.load(loadPath)
+            logger.info(f"Loading RF Model from {loadPath}")
+            self._model = joblib.load(loadPath)
         else:
-            self.model = RandomForestClassifier(n_estimators=100, random_state=42)
+            logger.warning(f"RF Model not found or path not provided. Model will require training.")
 
-    def train(self, xTrain, yTrain):
-        # Flatten xTrain if it's 3D (samples, sequence, features)
-        if len(xTrain.shape) == 3:
-            xTrain = xTrain.reshape(xTrain.shape[0], -1)
-        self.model.fit(xTrain, yTrain)
-        print("Random Forest Model trained.")
-
-    def predict(self, xTest):
-        # Flatten xTest if it's 3D
+    def predict(self, xTest: np.ndarray):
+        if self._model is None:
+            raise ValueError("RF Model not loaded. Train the model first.")
+        
+        # Flatten xTest if it's 3D (samples, sequence, features)
         if len(xTest.shape) == 3:
             xTest = xTest.reshape(xTest.shape[0], -1)
-        return self.model.predict_proba(xTest)
+            
+        return self._model.predict_proba(xTest)
 
-    def saveModel(self, path: str):
-        joblib.dump(self.model, path)
-        print(f"Random Forest Model saved to {path}")
+    def trainAndSave(self, xTrain, yTrain, savePath: str):
+        logger.info("Training and Saving RF Model")
+        if len(xTrain.shape) == 3:
+            xTrain = xTrain.reshape(xTrain.shape[0], -1)
+            
+        if self._model is None:
+            self._model = RandomForestClassifier(n_estimators=100, random_state=42)
+            
+        self._model.fit(xTrain, yTrain)
+        os.makedirs(os.path.dirname(savePath), exist_ok=True)
+        joblib.dump(self._model, savePath)
+        logger.info(f"RF Model saved to {savePath}")
 
 class RFModelTrainer:
-    """
-    Handles preparation of data for Random Forest.
-    """
-    def __init__(self):
-        pass
-
     def prepareData(self, data: pd.DataFrame, targetColumn: str = 'Close'):
+        logger.info("Preparing data for RF Training")
         featureCols = [col for col in data.columns if col not in ['Date', 'Headline', targetColumn, 'Target', 'Next_Close']]
         
         data = data.copy()
@@ -48,5 +59,4 @@ class RFModelTrainer:
 
         x = data[featureCols].values
         y = data['Target'].values
-            
         return x, y, featureCols

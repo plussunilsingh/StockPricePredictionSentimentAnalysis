@@ -1,85 +1,75 @@
-from abc import ABC, abstractmethod
 import pandas as pd
+import os
+from abc import ABC, abstractmethod
+from typing import Optional
+from com.stockprediction.config.AppConfig import config
+
+logger = config.getLogger("DataStrategy")
+
 try:
     import yfinance as yf
 except ImportError:
     yf = None
-import os
 
-class DataCollectionStrategy(ABC):
-    """
-    Abstract Base Class for Data Collection Strategies.
-    """
+class DataScanner(ABC):
     @abstractmethod
     def collectData(self, symbol: str, startDate: str, endDate: str) -> pd.DataFrame:
         pass
 
-class StockDataCollector(DataCollectionStrategy):
-    """
-    Concrete Strategy for collecting historical stock data via yfinance.
-    """
+class CsvStockScanner(DataScanner):
     def collectData(self, symbol: str, startDate: str, endDate: str) -> pd.DataFrame:
-        print(f"Collecting stock data for {symbol} from {startDate} to {endDate}")
-        stockData = yf.download(symbol, start=startDate, end=endDate)
-        
-        # Ensure we have date as a column if it's the index
-        if isinstance(stockData.index, pd.DatetimeIndex):
-            stockData.reset_index(inplace=True)
-            if 'Date' in stockData.columns:
-                stockData['Date'] = pd.to_datetime(stockData['Date'])
-        return stockData
+        filePath = os.path.join(config.get("data", "mockDir"), f"{symbol}.csv")
+        logger.info(f"Scanning mock stock data for {symbol} at {filePath}")
+        if os.path.exists(filePath):
+            df = pd.read_csv(filePath)
+            df['Date'] = pd.to_datetime(df['Date'])
+            mask = (df['Date'] >= startDate) & (df['Date'] <= endDate)
+            return df.loc[mask]
+        logger.warning(f"Mock stock data file not found: {filePath}")
+        return pd.DataFrame()
 
-class CsvStockDataCollector(DataCollectionStrategy):
-    """
-    Concrete Strategy for collecting historical stock data via CSV files (Mock).
-    """
+class LiveStockScanner(DataScanner):
     def collectData(self, symbol: str, startDate: str, endDate: str) -> pd.DataFrame:
-        filePath = f"data/{symbol}.csv"
-        print(f"Collecting stock data for {symbol} from {filePath}")
-        if not os.path.exists(filePath):
-            print(f"File {filePath} not found. Returning empty DataFrame.")
+        logger.info(f"Scanning live stock data for {symbol} from {startDate} to {endDate}")
+        if yf is None:
+            logger.error("yfinance not installed. Cannot fetch live data.")
             return pd.DataFrame()
         
-        stockData = pd.read_csv(filePath)
-        if 'Date' in stockData.columns:
-            stockData['Date'] = pd.to_datetime(stockData['Date'])
-            # Filter by date range if needed
-            mask = (stockData['Date'] >= startDate) & (stockData['Date'] <= endDate)
-            stockData = stockData.loc[mask]
-        return stockData
+        try:
+            yfSymbol = symbol
+            if symbol == "NSEI": yfSymbol = "^NSEI"
+            if symbol == "BSESN": yfSymbol = "^BSESN"
+            
+            df = yf.download(yfSymbol, start=startDate, end=endDate)
+            if not df.empty:
+                df = df.reset_index()
+                if 'Date' in df.columns:
+                    df['Date'] = pd.to_datetime(df['Date'])
+                return df
+        except Exception as e:
+            logger.error(f"Error fetching live stock data: {e}")
+        return pd.DataFrame()
 
-class NewsDataCollector(DataCollectionStrategy):
-    """
-    Concrete Strategy for collecting News data.
-    """
-    def __init__(self, apiKey: str = ""):
-        self.apiKey = apiKey
-
+class CsvNewsScanner(DataScanner):
     def collectData(self, symbol: str, startDate: str, endDate: str) -> pd.DataFrame:
-        print(f"Collecting news data for {symbol}")
-        # Placeholder for actual news API call
-        # Mock format: Date, Headline
-        dummyData = {
-            'Date': pd.date_range(start=startDate, end=endDate),
-            'Headline': [f"Dummy news headline for {symbol} on day {i}" for i in range((pd.to_datetime(endDate) - pd.to_datetime(startDate)).days + 1)]
-        }
-        return pd.DataFrame(dummyData)
+        filePath = os.path.join(config.get("data", "mockDir"), f"{symbol}_news.csv")
+        logger.info(f"Scanning mock news data for {symbol} at {filePath}")
+        if os.path.exists(filePath):
+            df = pd.read_csv(filePath)
+            df['Date'] = pd.to_datetime(df['Date'])
+            mask = (df['Date'] >= startDate) & (df['Date'] <= endDate)
+            return df.loc[mask]
+        logger.warning(f"Mock news data file not found: {filePath}")
+        return pd.DataFrame()
 
-class CsvNewsDataCollector(DataCollectionStrategy):
-    """
-    Concrete Strategy for collecting News data via CSV files (Mock).
-    """
-    def collectData(self, symbol: str, startDate: str, endDate: str) -> pd.DataFrame:
-        filePath = f"data/{symbol}_news.csv"
-        print(f"Collecting news data for {symbol} from {filePath}")
-        if not os.path.exists(filePath):
-            print(f"File {filePath} not found. Returning empty DataFrame.")
-            return pd.DataFrame()
-        
-        newsData = pd.read_csv(filePath)
-        if 'Date' in newsData.columns:
-            newsData['Date'] = pd.to_datetime(newsData['Date'])
-            # Filter by date range if needed
-            mask = (newsData['Date'] >= startDate) & (newsData['Date'] <= endDate)
-            newsData = newsData.loc[mask]
-        return newsData
+class DataScannerFactory:
+    @staticmethod
+    def getStockScanner(scannerType: str = "MOCK") -> DataScanner:
+        if scannerType == "LIVE":
+            return LiveStockScanner()
+        return CsvStockScanner()
+
+    @staticmethod
+    def getNewsScanner(scannerType: str = "MOCK") -> DataScanner:
+        # Currently only Mock News is supported; Live News would integrate Twitter/NewsAPI
+        return CsvNewsScanner()
