@@ -1,0 +1,31 @@
+{
+  "system": {
+    "dataMode": "MOCK",
+    "port": 8000,
+    "logFile": "backend.log"
+  },
+  "models": {
+    "lstmPath": "data/model.h5",
+    "rfPath": "data/rf_model.joblib",
+    "defaultModel": "RF",
+    "sequenceLength": 10
+  },
+  "symbols": {
+    "indices": [
+      { "label": "NIFTY 50 (NSEI)", "value": "NSEI" },
+      { "label": "SENSEX (BSESN)", "value": "BSESN" },
+      { "label": "NIFTY BANK", "value": "NSEBANK" },
+      { "label": "NIFTY IT", "value": "CNXIT" }
+    ],
+    "stocks": [
+      { "label": "Apple (AAPL)", "value": "AAPL" },
+      { "label": "Microsoft (MSFT)", "value": "MSFT" },
+      { "label": "Google (GOOGL)", "value": "GOOGL" }
+    ]
+  },
+  "data": {
+    "mockDir": "data",
+    "historicalDays": 180,
+    "predictionWindow": 40
+  }
+}

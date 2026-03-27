@@ -1,4 +1,4 @@
-import yaml
+import json
 import os
 import logging
 
@@ -14,10 +14,10 @@ class AppConfig:
         return cls._instance
 
     def _loadConfig(self):
-        configPath = os.path.join(os.path.dirname(__file__), "config.yaml")
+        configPath = os.path.join(os.path.dirname(__file__), "config.json")
         if os.path.exists(configPath):
             with open(configPath, "r") as f:
-                self._config = yaml.safe_load(f)
+                self._config = json.load(f)
         else:
             print(f"Warning: Configuration file not found at {configPath}")
 
