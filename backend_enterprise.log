@@ -1,19 +1,4 @@
-INFO:     Started server process [40403]
+INFO:     Started server process [45859]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-2026-03-27 20:15:23,935 - BackendAPI - INFO - Received prediction request for NSEI using LSTM
-2026-03-27 20:15:23,943 - DataStrategy - INFO - Scanning mock stock data for NSEI at data/NSEI.csv
-2026-03-27 20:15:23,956 - DataStrategy - INFO - Scanning mock news data for NSEI at data/NSEI_news.csv
-2026-03-27 20:15:23,964 - LSTMModel - ERROR - TensorFlow not installed. LSTM predictor unavailable.
-2026-03-27 20:15:23,964 - LSTMModel - INFO - Preparing data for LSTM Training
-2026-03-27 20:15:23,968 - BackendAPI - ERROR - Prediction error for NSEI: LSTM Model not loaded. Train the model first.
-NLTK not found. Sentiment analysis will be disabled.
-INFO:     127.0.0.1:49493 - "POST /predict HTTP/1.1" 500 Internal Server Error
-2026-03-27 20:15:47,960 - BackendAPI - INFO - Received prediction request for MSFT using RF
-2026-03-27 20:15:47,963 - DataStrategy - INFO - Scanning mock stock data for MSFT at data/MSFT.csv
-2026-03-27 20:15:47,968 - DataStrategy - INFO - Scanning mock news data for MSFT at data/MSFT_news.csv
-2026-03-27 20:15:47,978 - RandomForestModel - INFO - Loading RF Model from data/rf_model.joblib
-2026-03-27 20:15:47,993 - RandomForestModel - INFO - Preparing data for RF Training
-2026-03-27 20:15:48,008 - BackendAPI - INFO - Prediction for MSFT: DOWN (79.0%) | Model: RF | Data: MOCK
-INFO:     127.0.0.1:49505 - "POST /predict HTTP/1.1" 200 OK
