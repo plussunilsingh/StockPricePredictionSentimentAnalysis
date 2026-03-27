@@ -50,3 +50,15 @@ INFO:     127.0.0.1:65043 - "POST /predict HTTP/1.1" 404 Not Found
 2026-03-27 19:53:41,177 - DataStrategy - INFO - Scanning live stock data for RELIANCE.NS from 2026-01-26 to 2026-03-27
 2026-03-27 19:53:41,177 - DataStrategy - ERROR - yfinance not installed. Cannot fetch live data.
 INFO:     127.0.0.1:65054 - "POST /predict HTTP/1.1" 404 Not Found
+2026-03-27 19:55:07,181 - BackendAPI - INFO - Received prediction request for BSESN using RF
+2026-03-27 19:55:07,185 - DataStrategy - INFO - Scanning live stock data for BSESN from 2026-01-26 to 2026-03-27
+2026-03-27 19:55:07,185 - DataStrategy - ERROR - yfinance not installed. Cannot fetch live data.
+INFO:     127.0.0.1:65078 - "POST /predict HTTP/1.1" 404 Not Found
+2026-03-27 19:58:02,214 - DataStrategy - INFO - Scanning mock stock data for AAPL at data/AAPL.csv
+2026-03-27 19:58:02,225 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 19:58:02,227 - RandomForestModel - WARNING - RF Model not found or path not provided. Model will require training.
+2026-03-27 19:58:02,227 - RandomForestModel - INFO - Training and Saving RF Model
+2026-03-27 19:58:02,337 - RandomForestModel - INFO - RF Model saved to data/rf_model.joblib
+2026-03-27 19:58:02,337 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 19:58:02,340 - LSTMModel - ERROR - TensorFlow not installed. LSTM predictor unavailable.
+2026-03-27 19:58:02,340 - LSTMModel - ERROR - TensorFlow not installed. Cannot train LSTM.
