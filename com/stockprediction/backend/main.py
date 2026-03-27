@@ -99,8 +99,11 @@ async def getPrediction(request: PredictionRequestDTO):
         if request.modelType == "RF":
             predictor = RandomForestModelPredictor(config.get("models", "rfPath"))
             trainer = RFModelTrainer()
+            logger.info(f"stockData columns: {stockData.columns.tolist()}, shape: {stockData.shape}")
             x, _, _ = trainer.prepareData(stockData)
+            logger.info(f"Prepared x shape: {x.shape}")
             if len(x) == 0:
+                logger.error(f"stockData before fail: {stockData.tail(5).to_dict()}")
                 raise ValueError("Not enough data points after preparation for RF")
             
             probs = predictor.predict(x[-1].reshape(1, -1))

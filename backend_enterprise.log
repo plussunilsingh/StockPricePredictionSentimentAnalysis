@@ -2,3 +2,215 @@ INFO:     Started server process [45859]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-03-27 20:57:55,203 - BackendAPI - INFO - Received prediction request for AAPL using RF
+2026-03-27 20:57:55,225 - DataStrategy - INFO - Scanning mock stock data for AAPL at data/AAPL.csv
+2026-03-27 20:57:55,234 - DataStrategy - INFO - Scanning mock news data for AAPL at data/AAPL_news.csv
+2026-03-27 20:57:55,239 - RandomForestModel - INFO - Loading RF Model from data/rf_model.joblib
+2026-03-27 20:57:55,249 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 20:57:55,253 - BackendAPI - INFO - Prediction for AAPL: DOWN (84.0%) | Model: RF | Data: MOCK
+NLTK not found. Sentiment analysis will be disabled.
+INFO:     127.0.0.1:51007 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:58:01,735 - BackendAPI - INFO - Received prediction request for MSFT using RF
+2026-03-27 20:58:01,737 - DataStrategy - INFO - Scanning mock stock data for MSFT at data/MSFT.csv
+2026-03-27 20:58:01,739 - DataStrategy - INFO - Scanning mock news data for MSFT at data/MSFT_news.csv
+2026-03-27 20:58:01,746 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 20:58:01,748 - BackendAPI - INFO - Prediction for MSFT: DOWN (79.0%) | Model: RF | Data: MOCK
+INFO:     127.0.0.1:51012 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:58:04,973 - BackendAPI - INFO - Received prediction request for NSEI using RF
+2026-03-27 20:58:04,975 - DataStrategy - INFO - Scanning mock stock data for NSEI at data/NSEI.csv
+2026-03-27 20:58:04,982 - DataStrategy - INFO - Scanning mock news data for NSEI at data/NSEI_news.csv
+2026-03-27 20:58:04,989 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 20:58:04,993 - BackendAPI - INFO - Prediction for NSEI: DOWN (77.0%) | Model: RF | Data: MOCK
+INFO:     127.0.0.1:51013 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:58:09,540 - BackendAPI - INFO - Received prediction request for NSEI using RF
+2026-03-27 20:58:09,542 - DataStrategy - INFO - Scanning mock stock data for NSEI at data/NSEI.csv
+2026-03-27 20:58:09,547 - DataStrategy - INFO - Scanning mock news data for NSEI at data/NSEI_news.csv
+2026-03-27 20:58:09,554 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 20:58:09,559 - BackendAPI - INFO - Prediction for NSEI: DOWN (77.0%) | Model: RF | Data: MOCK
+INFO:     127.0.0.1:51014 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:58:14,555 - BackendAPI - INFO - Received prediction request for NSEI using LSTM
+2026-03-27 20:58:14,557 - DataStrategy - INFO - Scanning mock stock data for NSEI at data/NSEI.csv
+2026-03-27 20:58:14,559 - DataStrategy - INFO - Scanning mock news data for NSEI at data/NSEI_news.csv
+2026-03-27 20:58:14,566 - LSTMModel - ERROR - TensorFlow not installed. LSTM predictor unavailable.
+2026-03-27 20:58:14,566 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 20:58:14,568 - LSTMModel - WARNING - TensorFlow not installed. Using simulated LSTM prediction for demonstration parity.
+2026-03-27 20:58:14,568 - BackendAPI - INFO - Prediction for NSEI: DOWN (69.7%) | Model: LSTM | Data: MOCK
+INFO:     127.0.0.1:51015 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:58:30,824 - BackendAPI - INFO - Received prediction request for NSEI using RF
+2026-03-27 20:58:30,825 - DataStrategy - INFO - Scanning mock stock data for NSEI at data/NSEI.csv
+2026-03-27 20:58:30,832 - DataStrategy - INFO - Scanning mock news data for NSEI at data/NSEI_news.csv
+2026-03-27 20:58:30,839 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 20:58:30,843 - BackendAPI - INFO - Prediction for NSEI: DOWN (77.0%) | Model: RF | Data: MOCK
+INFO:     127.0.0.1:51016 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:58:34,938 - BackendAPI - INFO - Received prediction request for NSEI using LSTM
+2026-03-27 20:58:34,939 - DataStrategy - INFO - Scanning mock stock data for NSEI at data/NSEI.csv
+2026-03-27 20:58:34,943 - DataStrategy - INFO - Scanning mock news data for NSEI at data/NSEI_news.csv
+2026-03-27 20:58:34,953 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 20:58:34,955 - LSTMModel - WARNING - TensorFlow not installed. Using simulated LSTM prediction for demonstration parity.
+2026-03-27 20:58:34,955 - BackendAPI - INFO - Prediction for NSEI: DOWN (69.7%) | Model: LSTM | Data: MOCK
+INFO:     127.0.0.1:51017 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:58:43,989 - BackendAPI - INFO - Received prediction request for NSEI using RF
+2026-03-27 20:58:43,991 - DataStrategy - INFO - Scanning mock stock data for NSEI at data/NSEI.csv
+2026-03-27 20:58:43,997 - DataStrategy - INFO - Scanning mock news data for NSEI at data/NSEI_news.csv
+2026-03-27 20:58:44,004 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 20:58:44,009 - BackendAPI - INFO - Prediction for NSEI: DOWN (77.0%) | Model: RF | Data: MOCK
+INFO:     127.0.0.1:51018 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:58:53,022 - BackendAPI - INFO - Received prediction request for GOOGL using LSTM
+2026-03-27 20:58:53,025 - DataStrategy - INFO - Scanning mock stock data for GOOGL at data/GOOGL.csv
+2026-03-27 20:58:53,030 - DataStrategy - INFO - Scanning mock news data for GOOGL at data/GOOGL_news.csv
+2026-03-27 20:58:53,040 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 20:58:53,042 - LSTMModel - WARNING - TensorFlow not installed. Using simulated LSTM prediction for demonstration parity.
+2026-03-27 20:58:53,042 - BackendAPI - INFO - Prediction for GOOGL: UP (63.1%) | Model: LSTM | Data: MOCK
+INFO:     127.0.0.1:51019 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:59:01,271 - BackendAPI - INFO - Received prediction request for GOOGL using RF
+2026-03-27 20:59:01,272 - DataStrategy - INFO - Scanning mock stock data for GOOGL at data/GOOGL.csv
+2026-03-27 20:59:01,277 - DataStrategy - INFO - Scanning mock news data for GOOGL at data/GOOGL_news.csv
+2026-03-27 20:59:01,286 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 20:59:01,294 - BackendAPI - INFO - Prediction for GOOGL: UP (85.0%) | Model: RF | Data: MOCK
+INFO:     127.0.0.1:51020 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:59:08,422 - BackendAPI - INFO - Received prediction request for MSFT using RF
+2026-03-27 20:59:08,424 - DataStrategy - INFO - Scanning mock stock data for MSFT at data/MSFT.csv
+2026-03-27 20:59:08,431 - DataStrategy - INFO - Scanning mock news data for MSFT at data/MSFT_news.csv
+2026-03-27 20:59:08,439 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 20:59:08,444 - BackendAPI - INFO - Prediction for MSFT: DOWN (79.0%) | Model: RF | Data: MOCK
+INFO:     127.0.0.1:51021 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:59:14,672 - BackendAPI - INFO - Received prediction request for BSESN using RF
+2026-03-27 20:59:14,673 - DataStrategy - INFO - Scanning mock stock data for BSESN at data/BSESN.csv
+2026-03-27 20:59:14,681 - DataStrategy - INFO - Scanning mock news data for BSESN at data/BSESN_news.csv
+2026-03-27 20:59:14,688 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 20:59:14,692 - BackendAPI - INFO - Prediction for BSESN: DOWN (72.0%) | Model: RF | Data: MOCK
+INFO:     127.0.0.1:51022 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:59:17,688 - BackendAPI - INFO - Received prediction request for BSESN using LSTM
+2026-03-27 20:59:17,690 - DataStrategy - INFO - Scanning mock stock data for BSESN at data/BSESN.csv
+2026-03-27 20:59:17,695 - DataStrategy - INFO - Scanning mock news data for BSESN at data/BSESN_news.csv
+2026-03-27 20:59:17,701 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 20:59:17,703 - LSTMModel - WARNING - TensorFlow not installed. Using simulated LSTM prediction for demonstration parity.
+2026-03-27 20:59:17,703 - BackendAPI - INFO - Prediction for BSESN: UP (57.3%) | Model: LSTM | Data: MOCK
+INFO:     127.0.0.1:51023 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:59:25,722 - BackendAPI - INFO - Received prediction request for BSESN using RF
+2026-03-27 20:59:25,724 - DataStrategy - INFO - Scanning mock stock data for BSESN at data/BSESN.csv
+2026-03-27 20:59:25,731 - DataStrategy - INFO - Scanning mock news data for BSESN at data/BSESN_news.csv
+2026-03-27 20:59:25,738 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 20:59:25,741 - BackendAPI - INFO - Prediction for BSESN: DOWN (72.0%) | Model: RF | Data: MOCK
+INFO:     127.0.0.1:51024 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 20:59:52,638 - BackendAPI - INFO - Received prediction request for BSESN using RF
+2026-03-27 20:59:52,641 - DataStrategy - INFO - Scanning live stock data for BSESN from 2026-01-26 to 2026-03-27
+2026-03-27 20:59:52,641 - DataStrategy - INFO - Using requests API fallback for live data: ^BSESN
+2026-03-27 20:59:53,054 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 20:59:53,062 - DataStrategy - INFO - Synthesized live data for BSESN up to 2026-03-27
+2026-03-27 20:59:53,065 - DataStrategy - INFO - Scanning mock news data for BSESN at data/BSESN_news.csv
+2026-03-27 20:59:53,075 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 20:59:53,077 - BackendAPI - ERROR - Prediction error for BSESN: Not enough data points after preparation for RF
+INFO:     127.0.0.1:51025 - "POST /predict HTTP/1.1" 500 Internal Server Error
+2026-03-27 21:00:02,570 - BackendAPI - INFO - Received prediction request for CNXIT using RF
+2026-03-27 21:00:02,571 - DataStrategy - INFO - Scanning live stock data for CNXIT from 2026-01-26 to 2026-03-27
+2026-03-27 21:00:02,571 - DataStrategy - INFO - Using requests API fallback for live data: CNXIT
+2026-03-27 21:00:03,271 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:00:03,278 - DataStrategy - INFO - Synthesized live data for CNXIT up to 2026-03-27
+2026-03-27 21:00:03,282 - DataStrategy - INFO - Scanning mock news data for CNXIT at data/CNXIT_news.csv
+2026-03-27 21:00:03,291 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 21:00:03,293 - BackendAPI - ERROR - Prediction error for CNXIT: Not enough data points after preparation for RF
+INFO:     127.0.0.1:51029 - "POST /predict HTTP/1.1" 500 Internal Server Error
+2026-03-27 21:00:07,053 - BackendAPI - INFO - Received prediction request for CNXIT using LSTM
+2026-03-27 21:00:07,054 - DataStrategy - INFO - Scanning live stock data for CNXIT from 2026-01-26 to 2026-03-27
+2026-03-27 21:00:07,055 - DataStrategy - INFO - Using requests API fallback for live data: CNXIT
+2026-03-27 21:00:07,884 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:00:07,890 - DataStrategy - INFO - Synthesized live data for CNXIT up to 2026-03-27
+2026-03-27 21:00:07,892 - DataStrategy - INFO - Scanning mock news data for CNXIT at data/CNXIT_news.csv
+2026-03-27 21:00:07,902 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 21:00:07,905 - LSTMModel - WARNING - TensorFlow not installed. Using simulated LSTM prediction for demonstration parity.
+2026-03-27 21:00:07,905 - BackendAPI - INFO - Prediction for CNXIT: DOWN (69.6%) | Model: LSTM | Data: LIVE
+INFO:     127.0.0.1:51031 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 21:00:16,506 - BackendAPI - INFO - Received prediction request for GOOGL using LSTM
+2026-03-27 21:00:16,509 - DataStrategy - INFO - Scanning live stock data for GOOGL from 2026-01-26 to 2026-03-27
+2026-03-27 21:00:16,509 - DataStrategy - INFO - Using requests API fallback for live data: GOOGL
+2026-03-27 21:00:16,822 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:00:16,827 - DataStrategy - INFO - Synthesized live data for GOOGL up to 2026-03-27
+2026-03-27 21:00:16,829 - DataStrategy - INFO - Scanning mock news data for GOOGL at data/GOOGL_news.csv
+2026-03-27 21:00:16,837 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 21:00:16,839 - LSTMModel - WARNING - TensorFlow not installed. Using simulated LSTM prediction for demonstration parity.
+2026-03-27 21:00:16,839 - BackendAPI - INFO - Prediction for GOOGL: UP (63.3%) | Model: LSTM | Data: LIVE
+INFO:     127.0.0.1:51033 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 21:00:22,305 - BackendAPI - INFO - Received prediction request for CNXIT using LSTM
+2026-03-27 21:00:22,307 - DataStrategy - INFO - Scanning live stock data for CNXIT from 2026-01-26 to 2026-03-27
+2026-03-27 21:00:22,307 - DataStrategy - INFO - Using requests API fallback for live data: CNXIT
+2026-03-27 21:00:22,589 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:00:22,597 - DataStrategy - INFO - Synthesized live data for CNXIT up to 2026-03-27
+2026-03-27 21:00:22,600 - DataStrategy - INFO - Scanning mock news data for CNXIT at data/CNXIT_news.csv
+2026-03-27 21:00:22,609 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 21:00:22,611 - LSTMModel - WARNING - TensorFlow not installed. Using simulated LSTM prediction for demonstration parity.
+2026-03-27 21:00:22,611 - BackendAPI - INFO - Prediction for CNXIT: DOWN (69.6%) | Model: LSTM | Data: LIVE
+INFO:     127.0.0.1:51035 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 21:00:28,372 - BackendAPI - INFO - Received prediction request for MSFT using LSTM
+2026-03-27 21:00:28,374 - DataStrategy - INFO - Scanning live stock data for MSFT from 2026-01-26 to 2026-03-27
+2026-03-27 21:00:28,374 - DataStrategy - INFO - Using requests API fallback for live data: MSFT
+2026-03-27 21:00:28,733 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:00:28,739 - DataStrategy - INFO - Synthesized live data for MSFT up to 2026-03-27
+2026-03-27 21:00:28,742 - DataStrategy - INFO - Scanning mock news data for MSFT at data/MSFT_news.csv
+2026-03-27 21:00:28,751 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 21:00:28,754 - LSTMModel - WARNING - TensorFlow not installed. Using simulated LSTM prediction for demonstration parity.
+2026-03-27 21:00:28,754 - BackendAPI - INFO - Prediction for MSFT: UP (50.9%) | Model: LSTM | Data: LIVE
+INFO:     127.0.0.1:51037 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 21:00:32,039 - BackendAPI - INFO - Received prediction request for NSEBANK using LSTM
+2026-03-27 21:00:32,041 - DataStrategy - INFO - Scanning live stock data for NSEBANK from 2026-01-26 to 2026-03-27
+2026-03-27 21:00:32,041 - DataStrategy - INFO - Using requests API fallback for live data: NSEBANK
+2026-03-27 21:00:32,343 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:00:32,350 - DataStrategy - INFO - Synthesized live data for NSEBANK up to 2026-03-27
+2026-03-27 21:00:32,352 - DataStrategy - INFO - Scanning mock news data for NSEBANK at data/NSEBANK_news.csv
+2026-03-27 21:00:32,361 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 21:00:32,364 - LSTMModel - WARNING - TensorFlow not installed. Using simulated LSTM prediction for demonstration parity.
+2026-03-27 21:00:32,364 - BackendAPI - INFO - Prediction for NSEBANK: DOWN (63.7%) | Model: LSTM | Data: LIVE
+INFO:     127.0.0.1:51039 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 21:00:35,390 - BackendAPI - INFO - Received prediction request for NSEI using LSTM
+2026-03-27 21:00:35,392 - DataStrategy - INFO - Scanning live stock data for NSEI from 2026-01-26 to 2026-03-27
+2026-03-27 21:00:35,392 - DataStrategy - INFO - Using requests API fallback for live data: ^NSEI
+2026-03-27 21:00:35,719 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:00:35,726 - DataStrategy - INFO - Synthesized live data for NSEI up to 2026-03-27
+2026-03-27 21:00:35,729 - DataStrategy - INFO - Scanning mock news data for NSEI at data/NSEI_news.csv
+2026-03-27 21:00:35,739 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 21:00:35,741 - LSTMModel - WARNING - TensorFlow not installed. Using simulated LSTM prediction for demonstration parity.
+2026-03-27 21:00:35,741 - BackendAPI - INFO - Prediction for NSEI: UP (67.2%) | Model: LSTM | Data: LIVE
+INFO:     127.0.0.1:51041 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 21:00:39,740 - BackendAPI - INFO - Received prediction request for AAPL using LSTM
+2026-03-27 21:00:39,741 - DataStrategy - INFO - Scanning live stock data for AAPL from 2026-01-26 to 2026-03-27
+2026-03-27 21:00:39,741 - DataStrategy - INFO - Using requests API fallback for live data: AAPL
+2026-03-27 21:00:40,023 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:00:40,031 - DataStrategy - INFO - Synthesized live data for AAPL up to 2026-03-27
+2026-03-27 21:00:40,033 - DataStrategy - INFO - Scanning mock news data for AAPL at data/AAPL_news.csv
+2026-03-27 21:00:40,042 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 21:00:40,044 - LSTMModel - WARNING - TensorFlow not installed. Using simulated LSTM prediction for demonstration parity.
+2026-03-27 21:00:40,044 - BackendAPI - INFO - Prediction for AAPL: DOWN (69.1%) | Model: LSTM | Data: LIVE
+INFO:     127.0.0.1:51044 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 21:00:44,554 - BackendAPI - INFO - Received prediction request for AAPL using RF
+2026-03-27 21:00:44,556 - DataStrategy - INFO - Scanning live stock data for AAPL from 2026-01-26 to 2026-03-27
+2026-03-27 21:00:44,556 - DataStrategy - INFO - Using requests API fallback for live data: AAPL
+2026-03-27 21:00:44,851 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:00:44,856 - DataStrategy - INFO - Synthesized live data for AAPL up to 2026-03-27
+2026-03-27 21:00:44,858 - DataStrategy - INFO - Scanning mock news data for AAPL at data/AAPL_news.csv
+2026-03-27 21:00:44,866 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 21:00:44,868 - BackendAPI - ERROR - Prediction error for AAPL: Not enough data points after preparation for RF
+INFO:     127.0.0.1:51046 - "POST /predict HTTP/1.1" 500 Internal Server Error
+2026-03-27 21:01:33,505 - BackendAPI - INFO - Received prediction request for AAPL using RF
+2026-03-27 21:01:33,508 - DataStrategy - INFO - Scanning mock stock data for AAPL at data/AAPL.csv
+2026-03-27 21:01:33,513 - DataStrategy - INFO - Scanning mock news data for AAPL at data/AAPL_news.csv
+2026-03-27 21:01:33,522 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 21:01:33,528 - BackendAPI - INFO - Prediction for AAPL: DOWN (84.0%) | Model: RF | Data: MOCK
+INFO:     127.0.0.1:51055 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 21:01:37,651 - BackendAPI - INFO - Received prediction request for AAPL using RF
+2026-03-27 21:01:37,651 - DataStrategy - INFO - Scanning live stock data for AAPL from 2026-01-26 to 2026-03-27
+2026-03-27 21:01:37,651 - DataStrategy - INFO - Using requests API fallback for live data: AAPL
+2026-03-27 21:01:38,502 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:01:38,505 - DataStrategy - INFO - Synthesized live data for AAPL up to 2026-03-27
+2026-03-27 21:01:38,507 - DataStrategy - INFO - Scanning mock news data for AAPL at data/AAPL_news.csv
+2026-03-27 21:01:38,513 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 21:01:38,515 - BackendAPI - ERROR - Prediction error for AAPL: Not enough data points after preparation for RF
+INFO:     127.0.0.1:51056 - "POST /predict HTTP/1.1" 500 Internal Server Error
+2026-03-27 21:02:18,325 - BackendAPI - INFO - Received prediction request for CNXIT using RF
+2026-03-27 21:02:18,328 - DataStrategy - INFO - Scanning live stock data for CNXIT from 2026-01-26 to 2026-03-27
+2026-03-27 21:02:18,328 - DataStrategy - INFO - Using requests API fallback for live data: CNXIT
+2026-03-27 21:02:19,045 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:02:19,053 - DataStrategy - INFO - Synthesized live data for CNXIT up to 2026-03-27
+2026-03-27 21:02:19,055 - DataStrategy - INFO - Scanning mock news data for CNXIT at data/CNXIT_news.csv
+2026-03-27 21:02:19,067 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 21:02:19,069 - BackendAPI - ERROR - Prediction error for CNXIT: Not enough data points after preparation for RF
+INFO:     127.0.0.1:51061 - "POST /predict HTTP/1.1" 500 Internal Server Error
