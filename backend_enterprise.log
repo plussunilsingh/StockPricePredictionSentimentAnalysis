@@ -46,3 +46,7 @@ INFO:     127.0.0.1:65036 - "POST /predict HTTP/1.1" 404 Not Found
 2026-03-27 19:53:10,497 - DataStrategy - INFO - Scanning live stock data for NSEI from 2026-01-26 to 2026-03-27
 2026-03-27 19:53:10,497 - DataStrategy - ERROR - yfinance not installed. Cannot fetch live data.
 INFO:     127.0.0.1:65043 - "POST /predict HTTP/1.1" 404 Not Found
+2026-03-27 19:53:41,168 - BackendAPI - INFO - Received prediction request for RELIANCE.NS using RF
+2026-03-27 19:53:41,177 - DataStrategy - INFO - Scanning live stock data for RELIANCE.NS from 2026-01-26 to 2026-03-27
+2026-03-27 19:53:41,177 - DataStrategy - ERROR - yfinance not installed. Cannot fetch live data.
+INFO:     127.0.0.1:65054 - "POST /predict HTTP/1.1" 404 Not Found
