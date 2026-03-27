@@ -2,7 +2,7 @@
   "system": {
     "dataMode": "MOCK",
     "port": 8000,
-    "logFile": "backend.log"
+    "logFile": "backend_enterprise.log"
   },
   "models": {
     "lstmPath": "data/model.h5",

@@ -4,8 +4,8 @@
 # Usage: ./manage.sh [start|stop|status|restart|logs]
 
 PROJECT_ROOT=$(pwd)
-BACKEND_LOG="backend.log"
-FRONTEND_LOG="frontend.log"
+BACKEND_LOG="backend_enterprise.log"
+FRONTEND_LOG="frontend_enterprise.log"
 PID_FILE=".app.pids"
 
 function start() {
