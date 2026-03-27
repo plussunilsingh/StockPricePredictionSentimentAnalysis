@@ -1,6 +1,6 @@
 import pandas as pd
+from typing import List, Dict, Any
 from com.stockprediction.backend.dto.PredictionDTO import PredictionResponseDTO
-from typing import Dict, Any
 
 class DataMapper:
     @staticmethod

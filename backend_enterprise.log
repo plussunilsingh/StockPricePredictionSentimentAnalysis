@@ -1,9 +1,13 @@
-Traceback (most recent call last):
-  File "/Users/suniltomar/Desktop/workspace/StockPricePredictionSentimentAnalysis/com/stockprediction/backend/main.py", line 14, in <module>
-    from com.stockprediction.backend.utils.DataMapper import DataMapper
-  File "/Users/suniltomar/Desktop/workspace/StockPricePredictionSentimentAnalysis/com/stockprediction/backend/utils/DataMapper.py", line 5, in <module>
-    class DataMapper:
-  File "/Users/suniltomar/Desktop/workspace/StockPricePredictionSentimentAnalysis/com/stockprediction/backend/utils/DataMapper.py", line 24, in DataMapper
-    def mapDfToDict(df: pd.DataFrame) -> List[Dict[str, Any]]:
-                                         ^^^^
-NameError: name 'List' is not defined. Did you mean: 'list'?
+INFO:     Started server process [36801]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+NLTK not found. Sentiment analysis will be disabled.
+INFO:     127.0.0.1:64949 - "GET / HTTP/1.1" 200 OK
+2026-03-27 19:48:18,712 - BackendAPI - INFO - Received prediction request for AAPL using RF
+2026-03-27 19:48:18,764 - DataStrategy - INFO - Scanning mock stock data for AAPL at data/AAPL.csv
+2026-03-27 19:48:18,804 - DataStrategy - INFO - Scanning mock news data for AAPL at data/AAPL_news.csv
+2026-03-27 19:48:18,827 - RandomForestModel - INFO - Loading RF Model from data/rf_model.joblib
+2026-03-27 19:48:18,866 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 19:48:18,877 - BackendAPI - ERROR - Prediction error for AAPL: X has 14 features, but RandomForestClassifier is expecting 12 features as input.
+INFO:     127.0.0.1:64965 - "POST /predict HTTP/1.1" 500 Internal Server Error
