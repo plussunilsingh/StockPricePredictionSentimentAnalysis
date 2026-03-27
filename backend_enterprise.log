@@ -26,3 +26,23 @@ INFO:     127.0.0.1:64984 - "POST /predict HTTP/1.1" 404 Not Found
 2026-03-27 19:50:20,185 - DataStrategy - INFO - Scanning live stock data for AAPL from 2026-01-26 to 2026-03-27
 2026-03-27 19:50:20,185 - DataStrategy - ERROR - yfinance not installed. Cannot fetch live data.
 INFO:     127.0.0.1:64996 - "POST /predict HTTP/1.1" 404 Not Found
+2026-03-27 19:51:29,966 - BackendAPI - INFO - Received prediction request for AAPL using RF
+2026-03-27 19:51:29,971 - DataStrategy - INFO - Scanning mock stock data for AAPL at data/AAPL.csv
+2026-03-27 19:51:29,982 - DataStrategy - INFO - Scanning mock news data for AAPL at data/AAPL_news.csv
+2026-03-27 19:51:29,989 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 19:51:29,990 - BackendAPI - ERROR - Prediction error for AAPL: X has 14 features, but RandomForestClassifier is expecting 12 features as input.
+INFO:     127.0.0.1:65020 - "POST /predict HTTP/1.1" 500 Internal Server Error
+2026-03-27 19:51:57,709 - BackendAPI - INFO - Received prediction request for AAPL using RF
+2026-03-27 19:51:57,718 - DataStrategy - INFO - Scanning mock stock data for AAPL at data/AAPL.csv
+2026-03-27 19:51:57,738 - DataStrategy - INFO - Scanning mock news data for AAPL at data/AAPL_news.csv
+2026-03-27 19:51:57,759 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 19:51:57,766 - BackendAPI - ERROR - Prediction error for AAPL: X has 14 features, but RandomForestClassifier is expecting 12 features as input.
+INFO:     127.0.0.1:65033 - "POST /predict HTTP/1.1" 500 Internal Server Error
+2026-03-27 19:52:19,110 - BackendAPI - INFO - Received prediction request for AAPL using RF
+2026-03-27 19:52:19,111 - DataStrategy - INFO - Scanning live stock data for AAPL from 2026-01-26 to 2026-03-27
+2026-03-27 19:52:19,112 - DataStrategy - ERROR - yfinance not installed. Cannot fetch live data.
+INFO:     127.0.0.1:65036 - "POST /predict HTTP/1.1" 404 Not Found
+2026-03-27 19:53:10,491 - BackendAPI - INFO - Received prediction request for NSEI using RF
+2026-03-27 19:53:10,497 - DataStrategy - INFO - Scanning live stock data for NSEI from 2026-01-26 to 2026-03-27
+2026-03-27 19:53:10,497 - DataStrategy - ERROR - yfinance not installed. Cannot fetch live data.
+INFO:     127.0.0.1:65043 - "POST /predict HTTP/1.1" 404 Not Found
