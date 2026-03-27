@@ -3,7 +3,7 @@
 .idea/
 
 #python lib
-venv/
+ven*/
 
 
 backend.log

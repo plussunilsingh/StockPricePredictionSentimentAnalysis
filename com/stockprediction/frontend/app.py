@@ -18,8 +18,11 @@ symbol = st.sidebar.text_input("Enter Stock Symbol (e.g., AAPL, RELIANCE.NS)", v
 if st.sidebar.button("Predict"):
     with st.spinner(f"Fetching predictions for {symbol}..."):
         try:
-            # Request to the Java Backend (which will call the Python ML Service)
-            response = requests.get(BACKEND_URL, params={"symbol": symbol})
+            # Request to the Python ML Service
+            response = requests.post(
+                BACKEND_URL, 
+                json={"symbol": symbol, "startDate": "2026-03-01", "endDate": "2026-03-15", "useMock": True}
+            )
             
             if response.status_code == 200:
                 data = response.json()
