@@ -11,3 +11,18 @@ INFO:     127.0.0.1:64949 - "GET / HTTP/1.1" 200 OK
 2026-03-27 19:48:18,866 - RandomForestModel - INFO - Preparing data for RF Training
 2026-03-27 19:48:18,877 - BackendAPI - ERROR - Prediction error for AAPL: X has 14 features, but RandomForestClassifier is expecting 12 features as input.
 INFO:     127.0.0.1:64965 - "POST /predict HTTP/1.1" 500 Internal Server Error
+2026-03-27 19:48:46,448 - BackendAPI - INFO - Received prediction request for AAPL using LSTM
+2026-03-27 19:48:46,464 - DataStrategy - INFO - Scanning mock stock data for AAPL at data/AAPL.csv
+2026-03-27 19:48:46,488 - DataStrategy - INFO - Scanning mock news data for AAPL at data/AAPL_news.csv
+2026-03-27 19:48:46,526 - LSTMModel - ERROR - TensorFlow not installed. LSTM predictor unavailable.
+2026-03-27 19:48:46,527 - LSTMModel - INFO - Preparing data for LSTM Training
+2026-03-27 19:48:46,533 - BackendAPI - ERROR - Prediction error for AAPL: LSTM Model not loaded. Train the model first.
+INFO:     127.0.0.1:64975 - "POST /predict HTTP/1.1" 500 Internal Server Error
+2026-03-27 19:49:21,163 - BackendAPI - INFO - Received prediction request for MSFT using RF
+2026-03-27 19:49:21,168 - DataStrategy - INFO - Scanning live stock data for MSFT from 2026-01-26 to 2026-03-27
+2026-03-27 19:49:21,168 - DataStrategy - ERROR - yfinance not installed. Cannot fetch live data.
+INFO:     127.0.0.1:64984 - "POST /predict HTTP/1.1" 404 Not Found
+2026-03-27 19:50:20,179 - BackendAPI - INFO - Received prediction request for AAPL using RF
+2026-03-27 19:50:20,185 - DataStrategy - INFO - Scanning live stock data for AAPL from 2026-01-26 to 2026-03-27
+2026-03-27 19:50:20,185 - DataStrategy - ERROR - yfinance not installed. Cannot fetch live data.
+INFO:     127.0.0.1:64996 - "POST /predict HTTP/1.1" 404 Not Found
