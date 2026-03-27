@@ -29,20 +29,23 @@ function start() {
 
 function stop() {
     echo "Stopping Stock Prediction System..."
-    if [ -f $PID_FILE ]; then
-        while read pid; do
-            if ps -p $pid > /dev/null; then
-                kill $pid
-                echo "Stopped process $pid"
-            fi
-        done < $PID_FILE
-        rm $PID_FILE
-    else
-        # Fallback: kill by process name if pid file missing
-        pkill -f "com/stockprediction/backend/main.py"
-        pkill -f "streamlit run com/stockprediction/frontend/app.py"
-        echo "Processes terminated via pkill."
+    # Kill backend on 8000
+    BACKEND_PID=$(lsof -ti:8000)
+    if [ ! -z "$BACKEND_PID" ]; then
+        kill -9 $BACKEND_PID
+        echo "Stopped backend process $BACKEND_PID"
     fi
+    
+    # Kill frontend on 8501
+    FRONTEND_PID=$(lsof -ti:8501 2>/dev/null || lsof -ti:8503 2>/dev/null)
+    if [ ! -z "$FRONTEND_PID" ]; then
+        kill -9 $FRONTEND_PID
+        echo "Stopped frontend process $FRONTEND_PID"
+    fi
+    
+    # Clean up PID file if it exists
+    [ -f $PID_FILE ] && rm $PID_FILE
+    echo "Processes terminated."
 }
 
 function status() {
