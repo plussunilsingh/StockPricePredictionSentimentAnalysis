@@ -1,4 +1,9 @@
 Traceback (most recent call last):
-  File "/Users/suniltomar/Desktop/workspace/StockPricePredictionSentimentAnalysis/com/stockprediction/backend/main.py", line 11, in <module>
-    from com.stockprediction.backend.sentiment.sentiment_analyzer import SentimentAnalyzer
-ImportError: cannot import name 'SentimentAnalyzer' from 'com.stockprediction.backend.sentiment.sentiment_analyzer' (/Users/suniltomar/Desktop/workspace/StockPricePredictionSentimentAnalysis/com/stockprediction/backend/sentiment/sentiment_analyzer.py)
+  File "/Users/suniltomar/Desktop/workspace/StockPricePredictionSentimentAnalysis/com/stockprediction/backend/main.py", line 14, in <module>
+    from com.stockprediction.backend.utils.DataMapper import DataMapper
+  File "/Users/suniltomar/Desktop/workspace/StockPricePredictionSentimentAnalysis/com/stockprediction/backend/utils/DataMapper.py", line 5, in <module>
+    class DataMapper:
+  File "/Users/suniltomar/Desktop/workspace/StockPricePredictionSentimentAnalysis/com/stockprediction/backend/utils/DataMapper.py", line 24, in DataMapper
+    def mapDfToDict(df: pd.DataFrame) -> List[Dict[str, Any]]:
+                                         ^^^^
+NameError: name 'List' is not defined. Did you mean: 'list'?

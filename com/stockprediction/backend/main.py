@@ -8,7 +8,7 @@ import os
 from com.stockprediction.config.AppConfig import config
 from com.stockprediction.backend.dto.PredictionDTO import PredictionRequestDTO, PredictionResponseDTO, TrainRequestDTO, TrainResponseDTO
 from com.stockprediction.backend.data.data_strategy import DataScannerFactory
-from com.stockprediction.backend.sentiment.sentiment_analyzer import SentimentAnalyzer
+from com.stockprediction.backend.sentiment.sentiment_analyzer import SentimentAnalyzerFactory
 from com.stockprediction.backend.model.best_model import RandomForestModelPredictor, RFModelTrainer
 from com.stockprediction.backend.model.lstm_model import LSTMModelPredictor, LSTMModelTrainer
 from com.stockprediction.backend.utils.DataMapper import DataMapper
@@ -25,7 +25,7 @@ app.add_middleware(
 )
 
 # Initialize components
-sentimentAnalyzer = SentimentAnalyzer()
+sentimentAnalyzer = SentimentAnalyzerFactory.getAnalyzer("VADER")
 
 def applyTechnicalIndicators(df: pd.DataFrame) -> pd.DataFrame:
     """Calculates technical indicators for feature engineering."""
@@ -87,7 +87,7 @@ async def getPrediction(request: PredictionRequestDTO):
         
     # Sentiment
     if not newsData.empty:
-        stockData['Sentiment'] = newsData['Headline'].apply(lambda x: sentimentAnalyzer.analyzeSentiment(x)['compound'])
+        stockData['Sentiment'] = newsData['Headline'].apply(lambda x: sentimentAnalyzer.analyzeText(x))
     else:
         stockData['Sentiment'] = 0.0
         
