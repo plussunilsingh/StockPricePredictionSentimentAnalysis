@@ -26,3 +26,25 @@ INFO:     127.0.0.1:52070 - "POST /predict HTTP/1.1" 200 OK
 2026-03-27 21:11:13,738 - BackendAPI - INFO - Prepared x shape: (81, 14)
 2026-03-27 21:11:13,740 - BackendAPI - INFO - Prediction for NSEI: DOWN (79.0%) | Model: RF | Data: LIVE
 INFO:     127.0.0.1:52080 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 21:30:58,599 - BackendAPI - INFO - Received prediction request for NSEI using RF
+2026-03-27 21:30:58,605 - DataStrategy - INFO - Scanning live stock data for NSEI from 2026-01-26 to 2026-03-27
+2026-03-27 21:30:58,605 - DataStrategy - INFO - Using requests API fallback for live data: ^NSEI
+2026-03-27 21:30:59,398 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:30:59,412 - DataStrategy - INFO - Synthesized live data for NSEI up to 2026-03-27
+2026-03-27 21:30:59,415 - DataStrategy - INFO - Scanning mock news data for NSEI at data/NSEI_news.csv
+2026-03-27 21:30:59,425 - BackendAPI - INFO - stockData columns: ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'EMA_12', 'EMA_26', 'MACD', 'Signal_Line', 'SMA_20', 'Std_20', 'Upper_Band', 'Lower_Band', 'RSI', 'Sentiment'], shape: (81, 16)
+2026-03-27 21:30:59,425 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 21:30:59,427 - BackendAPI - INFO - Prepared x shape: (81, 14)
+2026-03-27 21:30:59,431 - BackendAPI - INFO - Prediction for NSEI: DOWN (79.0%) | Model: RF | Data: LIVE
+INFO:     127.0.0.1:52173 - "POST /predict HTTP/1.1" 200 OK
+2026-03-27 21:31:06,107 - BackendAPI - INFO - Received prediction request for GOOGL using RF
+2026-03-27 21:31:06,109 - DataStrategy - INFO - Scanning live stock data for GOOGL from 2026-01-26 to 2026-03-27
+2026-03-27 21:31:06,109 - DataStrategy - INFO - Using requests API fallback for live data: GOOGL
+2026-03-27 21:31:06,373 - DataStrategy - WARNING - Yahoo API Fallback returned status 429. Using Synthetic Live Fallback.
+2026-03-27 21:31:06,380 - DataStrategy - INFO - Synthesized live data for GOOGL up to 2026-03-27
+2026-03-27 21:31:06,382 - DataStrategy - INFO - Scanning mock news data for GOOGL at data/GOOGL_news.csv
+2026-03-27 21:31:06,390 - BackendAPI - INFO - stockData columns: ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'EMA_12', 'EMA_26', 'MACD', 'Signal_Line', 'SMA_20', 'Std_20', 'Upper_Band', 'Lower_Band', 'RSI', 'Sentiment'], shape: (81, 16)
+2026-03-27 21:31:06,390 - RandomForestModel - INFO - Preparing data for RF Training
+2026-03-27 21:31:06,391 - BackendAPI - INFO - Prepared x shape: (81, 14)
+2026-03-27 21:31:06,395 - BackendAPI - INFO - Prediction for GOOGL: UP (88.0%) | Model: RF | Data: LIVE
+INFO:     127.0.0.1:52175 - "POST /predict HTTP/1.1" 200 OK
