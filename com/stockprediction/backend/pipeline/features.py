@@ -19,6 +19,27 @@ class FeatureEngineer:
         return data
         
     @staticmethod
+    def addEMA(data: pd.DataFrame, column: str, span: int) -> pd.DataFrame:
+        data[f'EMA_{span}'] = data[column].ewm(span=span, adjust=False).mean()
+        return data
+
+    @staticmethod
+    def addMACD(data: pd.DataFrame, column: str) -> pd.DataFrame:
+        exp1 = data[column].ewm(span=12, adjust=False).mean()
+        exp2 = data[column].ewm(span=26, adjust=False).mean()
+        data['MACD'] = exp1 - exp2
+        data['Signal_Line'] = data['MACD'].ewm(span=9, adjust=False).mean()
+        return data
+
+    @staticmethod
+    def addBollingerBands(data: pd.DataFrame, column: str, window: int = 20) -> pd.DataFrame:
+        sma = data[column].rolling(window=window).mean()
+        std = data[column].rolling(window=window).std()
+        data['BB_Upper'] = sma + (std * 2)
+        data['BB_Lower'] = sma - (std * 2)
+        return data
+
+    @staticmethod
     def mergeSentiment(stockData: pd.DataFrame, newsData: pd.DataFrame, sentimentAnalyzer) -> pd.DataFrame:
         """
         Analyzes news sentiment and merges it into the stock data based on date.

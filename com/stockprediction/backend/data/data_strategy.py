@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 import pandas as pd
-import yfinance as yf
+try:
+    import yfinance as yf
+except ImportError:
+    yf = None
 import os
 
 class DataCollectionStrategy(ABC):
