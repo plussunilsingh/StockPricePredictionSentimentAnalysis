@@ -87,7 +87,8 @@ async def getPrediction(request: PredictionRequestDTO):
         
     # Sentiment
     if not newsData.empty:
-        stockData['Sentiment'] = newsData['Headline'].apply(lambda x: sentimentAnalyzer.analyzeText(x))
+        avg_sentiment = newsData['Headline'].apply(lambda x: sentimentAnalyzer.analyzeText(x)).mean()
+        stockData['Sentiment'] = float(avg_sentiment)
     else:
         stockData['Sentiment'] = 0.0
         
