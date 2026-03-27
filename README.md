@@ -95,15 +95,13 @@ graph LR
 
 ## 🛠 Installation & Usage
 
-1. **Backend**:
-   ```bash
-   export PYTHONPATH=$PYTHONPATH:.
-   python3 com/stockprediction/backend/main.py
-   ```
-2. **Frontend**:
-   ```bash
-   streamlit run com/stockprediction/frontend/app.py
-   ```
+The system is managed via the enterprise `manage.sh` script:
+
+1. **Start System**: `./manage.sh start`
+2. **Access Dashboard**: `http://localhost:8501`
+3. **View Logs**: `./manage.sh logs`
+4. **Stop System**: `./manage.sh stop`
+5. **Check Status**: `./manage.sh status`
 
 ---
 

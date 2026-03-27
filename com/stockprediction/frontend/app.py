@@ -45,8 +45,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Application Header
-st.title("📈 Stock Sentinel")
-st.markdown("### *Enterprise-Grade Market Intelligence & Predictive Analysis*")
+st.title("🛡️ Enterprise Market Surveillance")
+st.markdown("### *Stock Sentinel | Advanced Predictive Analysis*")
 
 # Sidebar - User Settings
 with st.sidebar:
@@ -129,7 +129,12 @@ if predictButton:
                 """, unsafe_allow_html=True)
                 
                 if result.get('lastClose'):
-                    st.metric("Last Traded Price", f"{result['lastClose']:.2f}", delta=None)
+                    st.markdown(f"""
+                    <div style="background-color: #262730; padding: 15px; border-radius: 8px; border: 1px solid #444; margin-top: 20px;">
+                        <div class="metric-label">Last Traded Price</div>
+                        <div style="font-size: 1.5em; font-weight: bold; color: #fff;">{result['lastClose']:.2f}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
             
             with col2:
                 st.subheader("📊 Price Momentum")
@@ -151,4 +156,9 @@ if predictButton:
             st.warning("Intelligence Engine returned no results. Verify if data mode matches symbol availability.")
 else:
     st.info("👈 Select a security and click 'Generate Intelligence Report' to start analysis.")
-    st.image("https://images.unsplash.com/photo-1611974717482-1da3de121010?auto=format&fit=crop&q=80&w=1470&ixlib=rb-4.0.3", caption="Enterprise Market Surveillance System")
+    st.markdown("""
+    <div style="background-color: #1e1e2f; padding: 40px; border-radius: 15px; border: 1px solid #333; text-align: center;">
+        <h2 style="color: #a0a0a0;">System Ready for Surveillance</h2>
+        <p style="color: #666;">Awaiting command for technical and sentiment cross-analysis.</p>
+    </div>
+    """, unsafe_allow_html=True)

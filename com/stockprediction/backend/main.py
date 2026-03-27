@@ -118,6 +118,8 @@ async def getPrediction(request: PredictionRequestDTO):
             
         prediction = "UP" if prediction_prob > 0.5 else "DOWN"
         confidence = prediction_prob if prediction == "UP" else 1.0 - prediction_prob
+        
+        logger.info(f"Prediction for {request.symbol}: {prediction} ({confidence*100:.1f}%) | Model: {request.modelType} | Data: {scannerType}")
             
         return DataMapper.mapToPredictionResponse(request.symbol, prediction, confidence, request.modelType, lastPrice)
         
