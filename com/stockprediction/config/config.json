@@ -1,7 +1,7 @@
 {
   "system": {
     "dataMode": "MOCK",
-    "port": 8000,
+    "port": 5000,
     "logFile": "logs/backend_enterprise.log"
   },
   "models": {

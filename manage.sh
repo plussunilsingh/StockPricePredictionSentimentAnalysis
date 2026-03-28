@@ -24,25 +24,25 @@ function start() {
     echo "Backend started with PID: $BACKEND_PID (Logs: $BACKEND_LOG)"
     
     # Start Frontend
-    nohup python3 -m streamlit run com/stockprediction/frontend/app.py > $FRONTEND_LOG 2>&1 &
+    nohup python3 -m streamlit run com/stockprediction/frontend/app.py --server.port=5001 > $FRONTEND_LOG 2>&1 &
     FRONTEND_PID=$!
     echo $FRONTEND_PID >> $PID_FILE
     echo "Frontend started with PID: $FRONTEND_PID (Logs: $FRONTEND_LOG)"
     
-    echo "System is warming up. Access dashboard at http://localhost:8501"
+    echo "System is warming up. Access dashboard at http://localhost:5001"
 }
 
 function stop() {
     echo "Stopping Stock Prediction System..."
-    # Kill backend on 8000
-    BACKEND_PID=$(lsof -ti:8000)
+    # Kill backend on 5000
+    BACKEND_PID=$(lsof -ti:5000)
     if [ ! -z "$BACKEND_PID" ]; then
         kill -9 $BACKEND_PID
         echo "Stopped backend process $BACKEND_PID"
     fi
     
-    # Kill frontend on 8501
-    FRONTEND_PID=$(lsof -ti:8501 2>/dev/null || lsof -ti:8503 2>/dev/null)
+    # Kill frontend on 5001
+    FRONTEND_PID=$(lsof -ti:5001 2>/dev/null || lsof -ti:8503 2>/dev/null)
     if [ ! -z "$FRONTEND_PID" ]; then
         kill -9 $FRONTEND_PID
         echo "Stopped frontend process $FRONTEND_PID"

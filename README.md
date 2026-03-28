@@ -98,7 +98,7 @@ graph LR
 The system is managed via the enterprise `manage.sh` script:
 
 1. **Start System**: `./manage.sh start`
-2. **Access Dashboard**: `http://localhost:8501`
+2. **Access Dashboard**: `http://localhost:5001`
 3. **View Logs**: `./manage.sh logs`
 4. **Stop System**: `./manage.sh stop`
 5. **Check Status**: `./manage.sh status`
