@@ -90,10 +90,30 @@ def getPrediction(symbol, model, useMock):
             },
             timeout=15
         )
-        if response.status_code == 200:
-            return response.json()
+    except requests.exceptions.JSONDecodeError:
+        port = config.get('system', 'port')
+        st.error(f"""
+        ⚠️ **PORT COLLISION DETECTED (Port {port})**  
+        The backend returned an invalid response. This often happens on macOS  
+        when the **AirPlay Receiver** is running on this port.
+        
+        **Action required:**  
+        Turn off **AirPlay Receiver** in Mac **System Settings** ->  
+        **General** -> **AirDrop & Handoff** and rerun `./manage.sh restart`.
+        """)
+    except requests.exceptions.ConnectionError as e:
+        port = config.get('system', 'port')
+        if "Connection refused" in str(e) and str(port) == "5000":
+            st.error(f"""
+            🚨 **CRITICAL: Cannot Connect to Backend on Port 5000**  
+            FastAPI failed to start because port 5000 is occupied by macOS.
+            
+            **Action required:**  
+            Turn off **AirPlay Receiver** in Mac **System Settings** ->  
+            **General** -> **AirDrop & Handoff**.
+            """)
         else:
-            st.error(f"Engine Error: {response.text}")
+            st.error(f"Backend Offline: Failed to connect to port {port}. Details: {e}")
     except Exception as e:
         st.error(f"Backend Offline: {e}")
     return None
