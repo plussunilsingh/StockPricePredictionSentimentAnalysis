@@ -62,3 +62,17 @@ if __name__ == "__main__":
     generate_news_data('NSEBANK', days=days_long)
     generate_stock_data('CNXIT', 35000, days=days_long)
     generate_news_data('CNXIT', days=days_long)
+    
+    # Major Indian Stocks
+    generate_stock_data('RELIANCE', 2900, days=days_long)
+    generate_news_data('RELIANCE', days=days_long)
+    generate_stock_data('TCS', 3800, days=days_long)
+    generate_news_data('TCS', days=days_long)
+    generate_stock_data('INFY', 1500, days=days_long)
+    generate_news_data('INFY', days=days_long)
+    generate_stock_data('HDFCBANK', 1450, days=days_long)
+    generate_news_data('HDFCBANK', days=days_long)
+    generate_stock_data('ICICIBANK', 1050, days=days_long)
+    generate_news_data('ICICIBANK', days=days_long)
+    generate_stock_data('SBIN', 750, days=days_long)
+    generate_news_data('SBIN', days=days_long)
