@@ -5,7 +5,4 @@
 #python lib
 ven*/
 .venv/
-
-
-backend.log
-frontend.log
+logs/
