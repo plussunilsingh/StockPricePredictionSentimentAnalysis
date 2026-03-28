@@ -1,1 +1,0 @@
-info, debug, warning, error, critical = range(5)
