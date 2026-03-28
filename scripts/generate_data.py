@@ -2,8 +2,10 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
-def generate_stock_data(symbol, start_price, days=60):
-    dates = [datetime(2026, 1, 1) + timedelta(days=i) for i in range(days)]
+def generate_stock_data(symbol, start_price, days=180):
+    # End exactly at today: 2026-03-28
+    end_date = datetime(2026, 3, 28)
+    dates = [end_date - timedelta(days=i) for i in range(days-1, -1, -1)]
     prices = [start_price]
     for _ in range(days - 1):
         change = np.random.normal(0, 2)
@@ -20,8 +22,9 @@ def generate_stock_data(symbol, start_price, days=60):
     df.to_csv(f'data/{symbol}.csv', index=False)
     print(f"Generated data/{symbol}.csv")
 
-def generate_news_data(symbol, days=60):
-    dates = [datetime(2026, 1, 1) + timedelta(days=i) for i in range(days)]
+def generate_news_data(symbol, days=180):
+    end_date = datetime(2026, 3, 28)
+    dates = [end_date - timedelta(days=i) for i in range(days-1, -1, -1)]
     headlines = [
         f"Positive outlook for {symbol} after strong earnings report",
         f"{symbol} announces new strategic partnership",
