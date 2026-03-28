@@ -1,3 +1,10 @@
+"""LSTM model wrapper and trainer utilities.
+
+This module contains a small wrapper around a Keras LSTM model suitable
+for binary direction prediction and a trainer utility that prepares
+sliding-window sequences for supervised training.
+"""
+
 import os
 import pandas as pd
 import numpy as np
@@ -11,6 +18,7 @@ try:
     from tensorflow.keras.layers import LSTM, Dense, Dropout
 except ImportError:
     tf = None
+
 
 class LSTMModelPredictor:
     _instance = None
@@ -34,11 +42,18 @@ class LSTMModelPredictor:
             logger.warning(f"LSTM Model not found or path not provided: {loadPath}")
 
     def predict(self, xTest: np.ndarray):
+        """Return model predictions for input `xTest`.
+
+        If TensorFlow is not available, the function returns a deterministic
+        pseudo-random probability in a fixed range so downstream code can be
+        exercised during demos.
+        """
         if self._model is None:
             logger.warning("TensorFlow not installed. Using simulated LSTM prediction for demonstration parity.")
             # Deterministic simulation safely handling NaNs
             val = np.nansum(xTest)
-            if np.isnan(val) or np.isinf(val): val = 0.0
+            if np.isnan(val) or np.isinf(val):
+                val = 0.0
             np.random.seed(int(abs(val) * 1000) % (2**32))
             prob = np.random.uniform(0.3, 0.7)
             return np.array([[prob]])
@@ -48,6 +63,10 @@ class LSTMModelPredictor:
         if tf is None:
             logger.error("TensorFlow not installed. Cannot train LSTM.")
             return
+
+        # Defensive check
+        xTrain = np.asarray(xTrain)
+        yTrain = np.asarray(yTrain)
 
         logger.info(f"Building and Training LSTM Model. Input shape: {xTrain.shape}")
         model = Sequential([
@@ -66,11 +85,19 @@ class LSTMModelPredictor:
         self._model = model
         logger.info(f"LSTM Model saved to {savePath}")
 
+
 class LSTMModelTrainer:
     def __init__(self, sequenceLength: int = 10):
         self.sequenceLength = sequenceLength
 
     def prepareData(self, data: pd.DataFrame, targetColumn: str = 'Close'):
+        """Prepare sliding-window sequences and binary targets for LSTM training.
+
+        Returns:
+            x: numpy array shaped (n_samples, sequenceLength, n_features)
+            y: numpy array shaped (n_samples,)
+            featureCols: list of feature column names used
+        """
         logger.info("Preparing data for LSTM Training")
         featureCols = [col for col in data.columns if col not in ['Date', 'Headline', targetColumn, 'Target', 'Next_Close']]
         

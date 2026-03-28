@@ -1,6 +1,13 @@
+"""Helper utilities for preparing sequence datasets used by time-series models.
+
+This module provides a thin wrapper (ModelTrainer) to produce sliding-window
+sequence arrays and binary targets used by LSTM training code.
+"""
+
 import numpy as np
 import pandas as pd
 from .lstm_model import LSTMModelPredictor
+
 
 class ModelTrainer:
     """
@@ -12,7 +19,15 @@ class ModelTrainer:
     def createSequences(self, data: pd.DataFrame, targetColumn: str = 'Close'):
         """
         Creates sequences of length `sequenceLength` to predict UP(1) or DOWN(0) of `targetColumn`.
+
+        Returns:
+            x: numpy array (n_samples, sequenceLength, n_features)
+            y: numpy array (n_samples,)
+            featureCols: list of used feature names
         """
+        if targetColumn not in data.columns:
+            raise ValueError(f"Target column '{targetColumn}' not in data columns.")
+
         featureCols = [col for col in data.columns if col not in ['Date', 'Headline', targetColumn, 'Target', 'Next_Close']]
         # Re-insert targetColumn as part of features
         featureCols.append(targetColumn)
