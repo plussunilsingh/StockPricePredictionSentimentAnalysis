@@ -18,12 +18,12 @@
       { "label": "NIFTY IT", "value": "CNXIT" }
     ],
     "stocks": [
-      { "label": "RELIANCE (NSE)", "value": "RELIANCE" },
-      { "label": "TCS (NSE)", "value": "TCS" },
-      { "label": "INFY (NSE)", "value": "INFY" },
-      { "label": "HDFC BANK (NSE)", "value": "HDFCBANK" },
-      { "label": "ICICI BANK (NSE)", "value": "ICICIBANK" },
-      { "label": "SBIN (Status Bank)", "value": "SBIN" },
+      { "label": "RELIANCE (NSE)", "value": "RELIANCE.NS" },
+      { "label": "TCS (NSE)", "value": "TCS.NS" },
+      { "label": "INFY (NSE)", "value": "INFY.NS" },
+      { "label": "HDFC BANK (NSE)", "value": "HDFCBANK.NS" },
+      { "label": "ICICI BANK (NSE)", "value": "ICICIBANK.NS" },
+      { "label": "SBIN (NSE)", "value": "SBIN.NS" },
       { "label": "Apple (AAPL)", "value": "AAPL" },
       { "label": "Microsoft (MSFT)", "value": "MSFT" }
     ]

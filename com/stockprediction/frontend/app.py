@@ -92,6 +92,12 @@ def getPrediction(symbol, model, useMock):
             },
             timeout=15
         )
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 404:
+            st.warning(f"Data not found for {symbol}. Try switching Data Mode.")
+        else:
+            st.error(f"Backend Error ({response.status_code}): {response.text}")
     except requests.exceptions.ConnectionError as e:
         port = config.get('system', 'port')
         if "Connection refused" in str(e):
