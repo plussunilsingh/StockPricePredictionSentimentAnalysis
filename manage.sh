@@ -6,7 +6,7 @@
 PROJECT_ROOT=$(pwd)
 BACKEND_LOG="logs/backend_enterprise.log"
 FRONTEND_LOG="logs/frontend_enterprise.log"
-PID_FILE=".app.pids"
+PID_FILE="logs/.app.pids"
 
 function start() {
     echo "Starting Stock Prediction System..."
