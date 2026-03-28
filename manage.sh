@@ -52,12 +52,31 @@ function start() {
     nohup $PYTHON_BIN com/stockprediction/backend/main.py > $BACKEND_LOG 2>&1 &
     BACKEND_PID=$!
     echo $BACKEND_PID > $PID_FILE
+    
+    # --- POST-START VERIFICATION ---
+    sleep 2
+    if ! ps -p $BACKEND_PID > /dev/null; then
+        echo "❌ BACKEND FAILED TO START (Check logs below)"
+        echo "-------------------------------------------------------"
+        tail -n 10 $BACKEND_LOG
+        echo "-------------------------------------------------------"
+        exit 1
+    fi
     echo "Backend started with PID: $BACKEND_PID (Logs: $BACKEND_LOG)"
     
     # Start Frontend
     nohup $PYTHON_BIN -m streamlit run com/stockprediction/frontend/app.py --server.port=5001 > $FRONTEND_LOG 2>&1 &
     FRONTEND_PID=$!
     echo $FRONTEND_PID >> $PID_FILE
+    
+    sleep 1
+    if ! ps -p $FRONTEND_PID > /dev/null; then
+        echo "❌ FRONTEND FAILED TO START (Check logs below)"
+        echo "-------------------------------------------------------"
+        tail -n 10 $FRONTEND_LOG
+        echo "-------------------------------------------------------"
+        exit 1
+    fi
     echo "Frontend started with PID: $FRONTEND_PID (Logs: $FRONTEND_LOG)"
     
     echo "System is warming up. Access dashboard at http://localhost:5001"
