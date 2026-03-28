@@ -11,6 +11,11 @@ PID_FILE="logs/.app.pids"
 function start() {
     echo "Starting Stock Prediction System..."
     
+    # Create logs directory if it does not exist
+    if [ ! -d "logs" ]; then
+        mkdir logs
+    fi
+    
     # Start Backend
     export PYTHONPATH=$PYTHONPATH:.
     nohup python3 com/stockprediction/backend/main.py > $BACKEND_LOG 2>&1 &
