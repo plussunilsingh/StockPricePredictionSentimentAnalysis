@@ -5,7 +5,11 @@ min-max scaling) to make the pipeline auditable and deterministic.
 """
 
 import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
+
+try:
+    from sklearn.preprocessing import MinMaxScaler
+except Exception:
+    MinMaxScaler = None
 
 
 class DataPreprocessor:
@@ -13,7 +17,10 @@ class DataPreprocessor:
     Preprocesses data before feeding to the model.
     """
     def __init__(self):
-        self.scaler = MinMaxScaler(feature_range=(0, 1))
+        if MinMaxScaler is None:
+            self.scaler = None
+        else:
+            self.scaler = MinMaxScaler(feature_range=(0, 1))
 
     def cleanData(self, data: pd.DataFrame) -> pd.DataFrame:
         """Return a cleaned DataFrame (currently drops NA rows)."""
@@ -33,6 +40,8 @@ class DataPreprocessor:
         cols = [c for c in columns if c in data.columns]
         if not cols:
             return data
+        if self.scaler is None:
+            raise RuntimeError("scikit-learn is required to normalize data")
         data = data.copy()
         data.loc[:, cols] = self.scaler.fit_transform(data[cols])
         return data
@@ -44,4 +53,6 @@ class DataPreprocessor:
         """
         if data is None or data.empty:
             return pd.DataFrame()
+        if self.scaler is None:
+            raise RuntimeError("scikit-learn is required for inverse transform")
         return pd.DataFrame(self.scaler.inverse_transform(data))

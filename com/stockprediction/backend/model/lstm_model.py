@@ -6,8 +6,13 @@ sliding-window sequences for supervised training.
 """
 
 import os
-import pandas as pd
 import numpy as np
+
+try:
+    import pandas as pd
+except Exception:
+    pd = None
+
 from com.stockprediction.config.AppConfig import config
 
 logger = config.getLogger("LSTMModel")
@@ -16,8 +21,13 @@ try:
     import tensorflow as tf
     from tensorflow.keras.models import Sequential, load_model
     from tensorflow.keras.layers import LSTM, Dense, Dropout
-except ImportError:
+except Exception:
     tf = None
+    Sequential = None
+    load_model = None
+    LSTM = None
+    Dense = None
+    Dropout = None
 
 
 class LSTMModelPredictor:
@@ -31,7 +41,7 @@ class LSTMModelPredictor:
         return cls._instance
 
     def _loadModel(self, loadPath: str):
-        if tf is None:
+        if tf is None or load_model is None:
             logger.error("TensorFlow not installed. LSTM predictor unavailable.")
             return
 
@@ -60,7 +70,7 @@ class LSTMModelPredictor:
         return self._model.predict(xTest)
 
     def trainAndSave(self, xTrain, yTrain, savePath: str, epochs: int = 5):
-        if tf is None:
+        if tf is None or Sequential is None:
             logger.error("TensorFlow not installed. Cannot train LSTM.")
             return
 
@@ -90,14 +100,10 @@ class LSTMModelTrainer:
     def __init__(self, sequenceLength: int = 10):
         self.sequenceLength = sequenceLength
 
-    def prepareData(self, data: pd.DataFrame, targetColumn: str = 'Close'):
-        """Prepare sliding-window sequences and binary targets for LSTM training.
+    def prepareData(self, data, targetColumn: str = 'Close'):
+        if pd is None:
+            raise RuntimeError("pandas is required to prepare LSTM training data")
 
-        Returns:
-            x: numpy array shaped (n_samples, sequenceLength, n_features)
-            y: numpy array shaped (n_samples,)
-            featureCols: list of feature column names used
-        """
         logger.info("Preparing data for LSTM Training")
         featureCols = [col for col in data.columns if col not in ['Date', 'Headline', targetColumn, 'Target', 'Next_Close']]
         

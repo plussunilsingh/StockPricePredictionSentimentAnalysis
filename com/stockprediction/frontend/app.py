@@ -6,12 +6,23 @@ component choices are intentionally explicit and small so reviewers can
 quickly understand the UX decisions.
 """
 
-import streamlit as st
-import pandas as pd
+try:
+    import streamlit as st
+except Exception:
+    st = None
+
+try:
+    import pandas as pd
+except Exception:
+    pd = None
+
 import requests
 import os
 from datetime import datetime, timedelta
 from com.stockprediction.config.AppConfig import config
+
+if st is None:
+    raise RuntimeError("streamlit is required to run the frontend app")
 
 # Page Config
 st.set_page_config(
@@ -168,13 +179,16 @@ if predictButton:
                 filePath = os.path.join(mockDir, f"{finalSymbol}.csv")
                 
                 if os.path.exists(filePath):
-                    df = pd.read_csv(filePath)
-                    df['Date'] = pd.to_datetime(df['Date'])
-                    df = df.sort_values('Date').tail(histDays)
-                    
-                    # Using st.line_chart for better compatibility
-                    chart_data = df.set_index('Date')['Close']
-                    st.line_chart(chart_data)
+                    if pd is None:
+                        st.info("pandas not available: cannot load historical chart data")
+                    else:
+                        df = pd.read_csv(filePath)
+                        df['Date'] = pd.to_datetime(df['Date'])
+                        df = df.sort_values('Date').tail(histDays)
+
+                        # Using st.line_chart for better compatibility
+                        chart_data = df.set_index('Date')['Close']
+                        st.line_chart(chart_data)
                 else:
                     st.info("Live chart integration pending. Historical mock chart unavailable for this symbol.")
         else:

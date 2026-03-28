@@ -1,8 +1,24 @@
-import joblib
 import os
-import pandas as pd
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
+
+# Optional heavy imports: allow the module to be imported in environments
+# where these packages aren't installed (e.g., static analysis). Callers
+# that actually use the functionality will encounter helpful runtime errors.
+try:
+    import joblib
+except Exception:
+    joblib = None
+
+try:
+    import pandas as pd
+except Exception:
+    pd = None
+
+try:
+    from sklearn.ensemble import RandomForestClassifier
+except Exception:
+    RandomForestClassifier = None
+
 from com.stockprediction.config.AppConfig import config
 
 logger = config.getLogger("RandomForestModel")
@@ -38,10 +54,10 @@ class RandomForestModelPredictor:
         return cls._instance
 
     def _loadModel(self, loadPath: str):
-        """Load a joblib model if `loadPath` exists, otherwise leave unset.
+        if joblib is None:
+            logger.warning("joblib not available: model loading disabled.")
+            return
 
-        This method logs what it does to aid debugging during development.
-        """
         if loadPath and os.path.exists(loadPath):
             logger.info(f"Loading RF Model from {loadPath}")
             try:
@@ -53,19 +69,12 @@ class RandomForestModelPredictor:
             logger.warning("RF Model not found or path not provided. Model will require training.")
 
     def predict(self, xTest: np.ndarray) -> np.ndarray:
-        """Return predicted class probabilities for the provided input array.
-
-        Accepts either 2D arrays (n_samples, n_features) or 3D arrays where
-        the last two dims are flattened into a feature vector (n_samples, -1).
-        Raises ValueError if the model is not loaded.
-        """
         if self._model is None:
             raise ValueError("RF Model not loaded. Train the model first.")
 
         x = np.asarray(xTest)
 
         if x.ndim == 3:
-            # Flatten sequences/features into a single feature vector per sample
             x = x.reshape(x.shape[0], -1)
         elif x.ndim != 2:
             raise ValueError(f"Unexpected input array shape: {x.shape}")
@@ -73,10 +82,9 @@ class RandomForestModelPredictor:
         return self._model.predict_proba(x)
 
     def trainAndSave(self, xTrain: np.ndarray, yTrain: np.ndarray, savePath: str):
-        """Train a RandomForestClassifier on (xTrain, yTrain) and persist it.
+        if RandomForestClassifier is None:
+            raise RuntimeError("scikit-learn not available: cannot train RF model")
 
-        Returns the trained estimator to make testing easier.
-        """
         logger.info("Training RF Model")
 
         x = np.asarray(xTrain)
@@ -94,9 +102,12 @@ class RandomForestModelPredictor:
 
         # Ensure directory exists before saving
         if savePath:
-            os.makedirs(os.path.dirname(savePath), exist_ok=True)
-            joblib.dump(self._model, savePath)
-            logger.info(f"RF Model saved to {savePath}")
+            if joblib is None:
+                logger.warning("joblib not available: trained model will not be saved to disk")
+            else:
+                os.makedirs(os.path.dirname(savePath), exist_ok=True)
+                joblib.dump(self._model, savePath)
+                logger.info(f"RF Model saved to {savePath}")
         else:
             logger.warning("No savePath provided; model trained but not saved.")
 
@@ -104,12 +115,6 @@ class RandomForestModelPredictor:
 
     @classmethod
     def load_default(cls):
-        """Convenience: attempt to load a model from a sensible default path.
-
-        The default path is looked up from the application config if present,
-        otherwise a `data/rf_model.joblib` path is used. Returns the singleton
-        instance (possibly without a loaded model if the file didn't exist).
-        """
         default_path = config.get("models", "rf_model_path", default=os.path.join("data", "rf_model.joblib"))
         return cls(loadPath=default_path)
 
@@ -123,16 +128,17 @@ class RFModelTrainer:
     suitable for scikit-learn estimators.
     """
 
-    def prepareData(self, data: pd.DataFrame, targetColumn: str = 'Close'):
+    def prepareData(self, data, targetColumn: str = 'Close'):
+        if pd is None:
+            raise RuntimeError("pandas is required to prepare training data")
+
         logger.info("Preparing data for RF Training")
-        # Exclude obvious non-feature columns; keep all others as features.
         featureCols = [col for col in data.columns if col not in ['Date', 'Headline', targetColumn, 'Target', 'Next_Close']]
 
         data = data.copy()
         data['Next_Close'] = data[targetColumn].shift(-1)
         data['Target'] = (data['Next_Close'] > data[targetColumn]).astype(int)
 
-        # Drop rows where the target or any selected feature is NaN
         data = data.dropna(subset=['Target'] + featureCols)
 
         x = data[featureCols].values

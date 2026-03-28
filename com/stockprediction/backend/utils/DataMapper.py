@@ -4,7 +4,11 @@ Keeping mapping logic centralized reduces duplication and makes tests
 for serialization straightforward.
 """
 
-import pandas as pd
+try:
+    import pandas as pd
+except Exception:
+    pd = None
+
 from typing import List, Dict, Any
 from com.stockprediction.backend.dto.PredictionDTO import PredictionResponseDTO
 
@@ -34,8 +38,10 @@ class DataMapper:
         )
 
     @staticmethod
-    def mapDfToDict(df: pd.DataFrame) -> List[Dict[str, Any]]:
+    def mapDfToDict(df) -> List[Dict[str, Any]]:
         """Convert a DataFrame into a list of dictionaries suitable for JSON serialization."""
         if df is None:
             return []
+        if pd is None:
+            raise RuntimeError("pandas is required to convert DataFrame to dict")
         return df.to_dict(orient='records')

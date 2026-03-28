@@ -5,11 +5,23 @@ and unit tests. The generator is intentionally explicit so judges can
 see how demo data was created.
 """
 
-import pandas as pd
-import numpy as np
+try:
+    import pandas as pd
+except Exception:
+    pd = None
+
+try:
+    import numpy as np
+except Exception:
+    np = None
+
 from datetime import datetime, timedelta
 
+
 def generate_stock_data(symbol, start_price, days=180):
+    if pd is None or np is None:
+        raise RuntimeError("pandas and numpy are required to generate data")
+
     # End exactly at today: 2026-03-28 (project was developed with deterministic end date)
     end_date = datetime(2026, 3, 28)
     dates = [end_date - timedelta(days=i) for i in range(days-1, -1, -1)]
@@ -29,7 +41,11 @@ def generate_stock_data(symbol, start_price, days=180):
     df.to_csv(f'data/{symbol}.csv', index=False)
     print(f"Generated data/{symbol}.csv")
 
+
 def generate_news_data(symbol, days=180):
+    if pd is None or np is None:
+        raise RuntimeError("pandas and numpy are required to generate data")
+
     end_date = datetime(2026, 3, 28)
     dates = [end_date - timedelta(days=i) for i in range(days-1, -1, -1)]
     headlines = [
@@ -51,6 +67,7 @@ def generate_news_data(symbol, days=180):
     })
     df.to_csv(f'data/{symbol}_news.csv', index=False)
     print(f"Generated data/{symbol}_news.csv")
+
 
 if __name__ == "__main__":
     import os
