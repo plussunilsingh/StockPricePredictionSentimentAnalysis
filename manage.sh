@@ -19,18 +19,10 @@ function start() {
         mkdir logs
     fi
     
-    # === PRE-FLIGHT PORT CHECK (Port 5000) ===
-    # Check if macOS ControlCenter or another app is occupying port 5000
-    if lsof -Pi :5000 -sTCP:LISTEN -t >/dev/null ; then
-        echo -e "\n======================================================="
-        echo "🚨 ERROR: PORT 5000 IS BLOCKED BY MACOS 🚨"
-        echo "======================================================="
-        echo "macOS Monterey and later reserve port 5000 for 'AirPlay Receiver'."
-        echo "FastAPI cannot bind to this port natively. The backend CANNOT start."
-        echo ""
-        echo "SOLUTION: Open 'System Settings' -> 'General' -> 'AirDrop & Handoff',"
-        echo "and turn OFF 'AirPlay Receiver'. Then run ./manage.sh start again."
-        echo "=======================================================\n"
+    # === PRE-FLIGHT PORT CHECK (Port 8000) ===
+    if lsof -Pi :8000 -sTCP:LISTEN -t >/dev/null ; then
+        echo "🚨 ERROR: PORT 8000 IS OCCUPIED 🚨"
+        echo "System cannot start on Port 8000. Please run './manage.sh stop' or free current port."
         exit 1
     fi
     
@@ -65,7 +57,7 @@ function start() {
     echo "Backend started with PID: $BACKEND_PID (Logs: $BACKEND_LOG)"
     
     # Start Frontend
-    nohup $PYTHON_BIN -m streamlit run com/stockprediction/frontend/app.py --server.port=5001 > $FRONTEND_LOG 2>&1 &
+    nohup $PYTHON_BIN -m streamlit run com/stockprediction/frontend/app.py --server.port=8005 > $FRONTEND_LOG 2>&1 &
     FRONTEND_PID=$!
     echo $FRONTEND_PID >> $PID_FILE
     
@@ -79,20 +71,20 @@ function start() {
     fi
     echo "Frontend started with PID: $FRONTEND_PID (Logs: $FRONTEND_LOG)"
     
-    echo "System is warming up. Access dashboard at http://localhost:5001"
+    echo "System is warming up. Access dashboard at http://localhost:8005"
 }
 
 function stop() {
     echo "Stopping Stock Prediction System..."
-    # Kill backend on 5000
-    BACKEND_PID=$(lsof -ti:5000)
+    # Kill backend on 8000
+    BACKEND_PID=$(lsof -ti:8000)
     if [ ! -z "$BACKEND_PID" ]; then
         kill -9 $BACKEND_PID 2>/dev/null
         echo "Stopped backend process $BACKEND_PID"
     fi
     
-    # Kill frontend on 5001 and any stale instances
-    FRONTEND_PID=$(lsof -ti:5001 2>/dev/null || lsof -ti:8503 2>/dev/null || lsof -ti:8000 2>/dev/null || lsof -ti:8501 2>/dev/null)
+    # Kill frontend on 8005
+    FRONTEND_PID=$(lsof -ti:8005 2>/dev/null)
     if [ ! -z "$FRONTEND_PID" ]; then
         kill -9 $FRONTEND_PID 2>/dev/null
         echo "Stopped frontend process $FRONTEND_PID"
