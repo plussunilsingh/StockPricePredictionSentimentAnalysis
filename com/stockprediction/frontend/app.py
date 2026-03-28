@@ -1,3 +1,11 @@
+"""Streamlit frontend application for the Stock Sentinel dashboard.
+
+This module defines a small interactive UI used during the hackathon to
+trigger predictions and visualize recent price history. Styling and
+component choices are intentionally explicit and small so reviewers can
+quickly understand the UX decisions.
+"""
+
 import streamlit as st
 import pandas as pd
 import requests
@@ -52,9 +60,9 @@ st.markdown("### *Stock Sentinel | Advanced Predictive Analysis*")
 with st.sidebar:
     st.header("⚙️ Configuration")
     
-    # Live Data Toggle
-    isLiveData = st.toggle("Enable Live Market Data", value=(config.get("system", "dataMode") == "LIVE"))
-    
+    # Live Data Toggle: use checkbox for compatibility
+    isLiveData = st.checkbox("Enable Live Market Data", value=(config.get("system", "dataMode") == "LIVE"))
+
     # Model Selection
     modelType = st.radio("Predictive Model", ["RF", "LSTM"], index=0, help="Random Forest is faster; LSTM identifies long-term patterns.")
     
@@ -63,17 +71,24 @@ with st.sidebar:
     port = config.get("system", "port") if config.get("system", "port") else 8000
     
     # Market Selection
-    allSymbols = config.get("symbols", "indices") + config.get("symbols", "stocks")
+    symbols_config = config.get("symbols", "indices") or []
+    stocks_config = config.get("symbols", "stocks") or []
+    allSymbols = symbols_config + stocks_config
     symbolLabels = [s['label'] for s in allSymbols]
     symbolValues = [s['value'] for s in allSymbols]
     
+    # Defensive: handle missing symbol config
+    if not symbolLabels:
+        symbolLabels = ["RELIANCE.NS"]
+        symbolValues = ["RELIANCE.NS"]
+
     selectedLabel = st.selectbox("Market Security", symbolLabels)
     selectedSymbol = symbolValues[symbolLabels.index(selectedLabel)]
     
     manualSymbol = st.text_input("Or search symbol manually", value="", placeholder="e.g. RELIANCE.NS")
     finalSymbol = manualSymbol if manualSymbol else selectedSymbol
     
-    histDays = config.get("data", "historicalDays")
+    histDays = config.get("data", "historicalDays") or 90
     predictButton = st.button("Generate Intelligence Report")
 
 # Backend Communication

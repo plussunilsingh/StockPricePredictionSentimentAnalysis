@@ -6,7 +6,6 @@ sequence arrays and binary targets used by LSTM training code.
 
 import numpy as np
 import pandas as pd
-from .lstm_model import LSTMModelPredictor
 
 
 class ModelTrainer:
