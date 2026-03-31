@@ -103,7 +103,8 @@ with st.sidebar:
     predictButton = st.button("Generate Intelligence Report")
 
 # Backend Communication
-BACKEND_URL = f"http://127.0.0.1:{config.get('system', 'port')}"
+backend_port_env = os.environ.get("BACKEND_PORT", config.get('system', 'port') or 8000)
+BACKEND_URL = f"http://127.0.0.1:{backend_port_env}"
 
 def getPrediction(symbol, model, useMock):
     try:
@@ -125,11 +126,10 @@ def getPrediction(symbol, model, useMock):
         else:
             st.error(f"Backend Error ({response.status_code}): {response.text}")
     except requests.exceptions.ConnectionError as e:
-        port = config.get('system', 'port')
         if "Connection refused" in str(e):
-            st.error(f"🚨 **Backend Offline**: Connection refused on Port {port}. Ensure the backend is running via `./manage.sh start`.")
+            st.error(f"🚨 **Backend Offline**: Connection refused on Port {backend_port_env}. Ensure the backend is running via `./manage.sh start`.")
         else:
-            st.error(f"Backend Offline: Failed to connect to port {port}. Details: {e}")
+            st.error(f"Backend Offline: Failed to connect to port {backend_port_env}. Details: {e}")
     except Exception as e:
         st.error(f"Backend Offline: {e}")
     return None

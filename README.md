@@ -1,3 +1,15 @@
+---
+title: "Stock Price Prediction"
+emoji: "📈"
+colorFrom: "blue"
+colorTo: "green"
+sdk: docker
+sdk_version: "docker"
+python_version: "3.11"
+app_file: "com/stockprediction/frontend/app.py"
+pinned: false
+---
+
 # Stock Price Prediction & Sentiment Analysis System
 
 An end-to-end data-driven stock price prediction system that combines Technical Analysis (EMA, MACD, Bollinger Bands) with NLP-based Sentiment Analysis. Supporting major US and Indian market indices.
