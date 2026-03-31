@@ -37,7 +37,7 @@ RUN chmod +x /app/healthcheck.sh
 # Healthcheck: run the healthcheck script; give services plenty of time to start
 HEALTHCHECK --interval=10s --timeout=5s --start-period=180s --retries=20 CMD /app/healthcheck.sh || exit 1
 
-EXPOSE 8000 8005
+# EXPOSE 8000 8005 (Disabled for generic PaaS like Railway, which relies on PORT env var)
 
 # Use the same entrypoint script (it will create a .venv inside container)
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
