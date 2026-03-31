@@ -57,10 +57,10 @@ PY
 
 case "${1:-start}" in
   start)
-    echo "Starting backend on 0.0.0.0:$BACKEND_PORT and frontend on 0.0.0.0:$PORT"
+    echo "Starting backend on 127.0.0.1:$BACKEND_PORT and frontend on 0.0.0.0:$PORT"
 
-    # Start backend (uvicorn) bound to zero host so it's accessible locally and externally
-    python -m uvicorn com.stockprediction.backend.main:app --host 0.0.0.0 --port ${BACKEND_PORT} --log-level info &
+    # Start backend (uvicorn) bound to localhost so Railway ONLY exposes Streamlit
+    python -m uvicorn com.stockprediction.backend.main:app --host 127.0.0.1 --port ${BACKEND_PORT} --log-level info &
     backend_pid=$!
     echo "Backend started with PID $backend_pid"
 
