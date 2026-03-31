@@ -4,7 +4,6 @@
 
 #python lib
 ven*/
-
-
-backend.log
-frontend.log
+.venv/
+logs/
+test*/

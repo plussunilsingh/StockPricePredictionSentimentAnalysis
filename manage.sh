@@ -1,56 +1,140 @@
 #!/bin/bash
 
-# Configuration and Paths
-ROOT_DIR="$(pwd)"
+# Enterprise Management Script for Stock Prediction System
+# Usage: ./manage.sh [start|stop|status|restart|logs]
 
-start_services() {
-    echo "🚀 Starting Python Full-Stack Data-Driven Stock Price Prediction System..."
+PROJECT_ROOT=$(pwd)
+BACKEND_LOG="logs/backend_enterprise.log"
+FRONTEND_LOG="logs/frontend_enterprise.log"
+PID_FILE="logs/.app.pids"
+
+function start() {
+    echo "Starting Stock Prediction System..."
     
-    # Start Python Backend Service (FastAPI)
-    echo "➡ Starting Backend Service (Port 8000)..."
-    cd "$ROOT_DIR" || exit
-    export PYTHONPATH="$ROOT_DIR"
-    nohup "$ROOT_DIR/venv_new/bin/uvicorn" com.stockprediction.backend.main:app --host 0.0.0.0 --port 8000 > "$ROOT_DIR/backend.log" 2>&1 &
+    # Process cleanup
+    stop
     
-    # Start Frontend Service (Streamlit)
-    echo "➡ Starting Frontend Service (Port 8501)..."
-    cd "$ROOT_DIR/com/stockprediction/frontend" || exit
-    nohup "$ROOT_DIR/venv_new/bin/streamlit" run app.py > "$ROOT_DIR/frontend.log" 2>&1 &
+    # Create logs directory if it does not exist
+    if [ ! -d "logs" ]; then
+        mkdir logs
+    fi
     
-    cd "$ROOT_DIR" || exit
-    echo "✅ All services have been started in the background."
-    echo "📜 Logs are being written to backend.log and frontend.log"
+    # === PRE-FLIGHT PORT CHECK (Port 8000) ===
+    if lsof -Pi :8000 -sTCP:LISTEN -t >/dev/null ; then
+        echo "🚨 ERROR: PORT 8000 IS OCCUPIED 🚨"
+        echo "System cannot start on Port 8000. Please run './manage.sh stop' or free current port."
+        exit 1
+    fi
+    
+    # Auto-activate valid virtual environment to ensure robust dependency loading
+    PYTHON_BIN="python3"
+    if [ -f "test_env_311/bin/python3" ]; then
+        PYTHON_BIN="$(pwd)/test_env_311/bin/python3"
+    elif [ -d "venv_new" ]; then
+        PYTHON_BIN="$(pwd)/venv_new/bin/python3"
+    elif [ -d "venv" ]; then
+        PYTHON_BIN="$(pwd)/venv/bin/python3"
+    elif [ -d ".venv" ]; then
+        PYTHON_BIN="$(pwd)/.venv/bin/python3"
+    fi
+    echo "Using Python: $PYTHON_BIN"
+    
+    # Start Backend
+    export PYTHONPATH=$PYTHONPATH:.
+    nohup $PYTHON_BIN com/stockprediction/backend/main.py > $BACKEND_LOG 2>&1 &
+    BACKEND_PID=$!
+    echo $BACKEND_PID > $PID_FILE
+    
+    # --- POST-START VERIFICATION ---
+    sleep 2
+    if ! ps -p $BACKEND_PID > /dev/null; then
+        echo "❌ BACKEND FAILED TO START (Check logs below)"
+        echo "-------------------------------------------------------"
+        tail -n 10 $BACKEND_LOG
+        echo "-------------------------------------------------------"
+        exit 1
+    fi
+    echo "Backend started with PID: $BACKEND_PID (Logs: $BACKEND_LOG)"
+    
+    # Start Frontend
+    nohup $PYTHON_BIN -m streamlit run com/stockprediction/frontend/app.py --server.port=8005 > $FRONTEND_LOG 2>&1 &
+    FRONTEND_PID=$!
+    echo $FRONTEND_PID >> $PID_FILE
+    
+    sleep 1
+    if ! ps -p $FRONTEND_PID > /dev/null; then
+        echo "❌ FRONTEND FAILED TO START (Check logs below)"
+        echo "-------------------------------------------------------"
+        tail -n 10 $FRONTEND_LOG
+        echo "-------------------------------------------------------"
+        exit 1
+    fi
+    echo "Frontend started with PID: $FRONTEND_PID (Logs: $FRONTEND_LOG)"
+    
+    echo "System is warming up. Access dashboard at http://localhost:8005"
 }
 
-stop_services() {
-    echo "🛑 Stopping all services..."
+function stop() {
+    echo "Stopping Stock Prediction System..."
+    # Kill backend on 8000
+    BACKEND_PID=$(lsof -ti:8000)
+    if [ ! -z "$BACKEND_PID" ]; then
+        kill -9 $BACKEND_PID 2>/dev/null
+        echo "Stopped backend process $BACKEND_PID"
+    fi
     
-    echo "➡ Stopping Backend Service (Port 8000)..."
-    # Find processes listening on port 8000 and kill them
-    lsof -ti:8000 | xargs kill -9 2>/dev/null || echo "   (Backend Service was not running)"
+    # Kill frontend on 8005
+    FRONTEND_PID=$(lsof -ti:8005 2>/dev/null)
+    if [ ! -z "$FRONTEND_PID" ]; then
+        kill -9 $FRONTEND_PID 2>/dev/null
+        echo "Stopped frontend process $FRONTEND_PID"
+    fi
+    # Also blindly kill any hanging streamlit instances running independently
+    pkill -f "streamlit run" 2>/dev/null
+    
+    # Clean up PID file if it exists
+    [ -f $PID_FILE ] && rm $PID_FILE
+    echo "Processes terminated."
+}
 
-    echo "➡ Stopping Frontend Service (Port 8501)..."
-    # Streamlit typically uses port 8501
-    lsof -ti:8501 | xargs kill -9 2>/dev/null || echo "   (Frontend Service was not running)"
+function status() {
+    echo "System Status:"
+    if [ -f $PID_FILE ]; then
+        while read pid; do
+            if ps -p $pid > /dev/null; then
+                echo "Process $pid is RUNNING."
+            else
+                echo "Process $pid is NOT running."
+            fi
+        done < $PID_FILE
+    else
+        echo "No PID file found. System might be offline."
+    fi
+}
 
-    echo "✅ All services stopped successfully."
+function logs() {
+    tail -f $BACKEND_LOG $FRONTEND_LOG
 }
 
 case "$1" in
     start)
-        start_services
+        start
         ;;
     stop)
-        stop_services
+        stop
+        ;;
+    status)
+        status
         ;;
     restart)
-        stop_services
-        echo "Waiting for 2 seconds..."
+        stop
         sleep 2
-        start_services
+        start
+        ;;
+    logs)
+        logs
         ;;
     *)
-        echo "Usage: ./manage.sh {start|stop|restart}"
+        echo "Usage: $0 {start|stop|status|restart|logs}"
         exit 1
-        ;;
 esac

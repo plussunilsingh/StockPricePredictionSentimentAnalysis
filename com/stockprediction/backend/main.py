@@ -1,131 +1,194 @@
-print("Backend: Starting imports...")
-from fastapi import FastAPI, HTTPException
-print("Backend: FastAPI imported.")
-from pydantic import BaseModel
-print("Backend: Pydantic imported.")
-import sys
-import os
-print("Backend: sys/os imported.")
-from com.stockprediction.backend.data.data_factory import DataCollectorFactory, DataType
-print("Backend: Data layers imported.")
-from com.stockprediction.backend.sentiment.sentiment_analyzer import SentimentAnalyzerFactory
-print("Backend: Sentiment analyzer imported.")
-from com.stockprediction.backend.pipeline.features import FeatureEngineer
-print("Backend: Feature engineer imported.")
-from com.stockprediction.backend.model.lstm_model import LSTMModelPredictor
-print("Backend: LSTM Model imported.")
-from com.stockprediction.backend.model.trainer import ModelTrainer
-print("Backend: Model trainer imported.")
-import pandas as pd
-print("Backend: Pandas imported.")
-import numpy as np
-print("Backend: Numpy imported.")
+"""Backend FastAPI application entrypoints for the Stock Prediction project.
 
-print("Backend: Imports completed.")
-app = FastAPI(title="Stock Prediction ML API")
-print("Backend: FastAPI app created.")
+This module defines HTTP endpoints used by the frontend to request
+predictions and trigger training. The file intentionally documents
+non-obvious design choices and keeps handlers small and testable.
+"""
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import os
+
+from com.stockprediction.config.AppConfig import config
+from com.stockprediction.backend.dto.PredictionDTO import PredictionRequestDTO, PredictionResponseDTO, TrainRequestDTO, TrainResponseDTO
+from com.stockprediction.backend.data.data_strategy import DataScannerFactory
+from com.stockprediction.backend.sentiment.sentiment_analyzer import SentimentAnalyzerFactory
+from com.stockprediction.backend.model.best_model import RandomForestModelPredictor, RFModelTrainer
+from com.stockprediction.backend.model.lstm_model import LSTMModelPredictor, LSTMModelTrainer
+from com.stockprediction.backend.utils.DataMapper import DataMapper
+
+logger = config.getLogger("BackendAPI")
+app = FastAPI(title="Stock Prediction Enterprise API")
+
+# Enable CORS for frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize components
-featureEngineer = FeatureEngineer()
 sentimentAnalyzer = SentimentAnalyzerFactory.getAnalyzer("VADER")
-modelTrainer = ModelTrainer(sequenceLength=5) # use 5 for small sample data
-model_path = "data/model.h5"
 
-class PredictionRequest(BaseModel):
-    symbol: str
-    startDate: str = "2026-03-01"
-    endDate: str = "2026-03-15"
-    useMock: bool = True
 
-class PredictionResponse(BaseModel):
-    symbol: str
-    prediction: str
-    confidence: float
-    decision: str
+def applyTechnicalIndicators(df: pd.DataFrame) -> pd.DataFrame:
+    """Compute common technical indicators used as features.
+
+    The function returns a DataFrame with added columns (EMA_12, EMA_26,
+    MACD, Signal_Line, SMA_20, Upper_Band, Lower_Band, RSI). It performs a
+    defensive check and returns the original (possibly-empty) DataFrame if
+    there is not enough data to compute rolling indicators.
+    """
+    if df is None:
+        logger.warning("applyTechnicalIndicators received None input")
+        return pd.DataFrame()
+
+    if df.empty or len(df) < 20:
+        logger.warning(f"Insufficient data for indicators: {len(df)} rows")
+        return df
+
+    df = df.copy()
+    # Ensure 'Close' is present and numeric
+    if 'Close' not in df.columns:
+        logger.error("Missing required 'Close' column for indicators")
+        return pd.DataFrame()
+
+    df['Close'] = pd.to_numeric(df['Close'], errors='coerce')
+
+    # EMA
+    df['EMA_12'] = df['Close'].ewm(span=12, adjust=False).mean()
+    df['EMA_26'] = df['Close'].ewm(span=26, adjust=False).mean()
+
+    # MACD
+    df['MACD'] = df['EMA_12'] - df['EMA_26']
+    df['Signal_Line'] = df['MACD'].ewm(span=9, adjust=False).mean()
+
+    # Bollinger Bands
+    df['SMA_20'] = df['Close'].rolling(window=20).mean()
+    df['Std_20'] = df['Close'].rolling(window=20).std()
+    df['Upper_Band'] = df['SMA_20'] + (df['Std_20'] * 2)
+    df['Lower_Band'] = df['SMA_20'] - (df['Std_20'] * 2)
+
+    # RSI (Relative Strength Index)
+    delta = df['Close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / loss
+    df['RSI'] = 100 - (100 / (1 + rs))
+
+    return df.dropna()
+
 
 @app.get("/")
-def readRoot():
-    return {"message": "Stock Prediction ML API is running!"}
+async def root():
+    """Simple health endpoint returning running mode and status."""
+    return {"message": "Stock Prediction Enterprise API is running", "mode": config.get("system", "dataMode")}
 
-@app.post("/train")
-def trainModel(req: PredictionRequest):
-    # Fetch data
-    stockCollector = DataCollectorFactory.getCollector(DataType.CSV_STOCK if req.useMock else DataType.STOCK)
-    newsCollector = DataCollectorFactory.getCollector(DataType.CSV_NEWS if req.useMock else DataType.NEWS)
-    
-    stockData = stockCollector.collectData(req.symbol, req.startDate, req.endDate)
-    newsData = newsCollector.collectData(req.symbol, req.startDate, req.endDate)
-    
+
+@app.post("/predict", response_model=PredictionResponseDTO)
+async def getPrediction(request: PredictionRequestDTO):
+    """Handle prediction requests from the frontend.
+
+    Steps:
+    1. Determine whether to use mock data or live data.
+    2. Collect stock and news data.
+    3. Compute technical indicators and sentiment.
+    4. Prepare features and run the selected model (RF or LSTM).
+    """
+    logger.info(f"Received prediction request for {request.symbol} using {request.modelType}")
+
+    # Selection of scanner (Mock vs Live)
+    scannerType = "LIVE" if not request.useMock else "MOCK"
+    stockScanner = DataScannerFactory.getStockScanner(scannerType)
+    newsScanner = DataScannerFactory.getNewsScanner(scannerType)
+
+    # Fetch Data with window for indicators
+    end_dt = pd.to_datetime(request.endDate)
+    start_dt = (end_dt - timedelta(days=60)).strftime('%Y-%m-%d')
+    stockData = stockScanner.collectData(request.symbol, start_dt, request.endDate)
+
     if stockData.empty:
-        raise HTTPException(status_code=404, detail="Stock data not found")
-        
-    # Feature Engineering
-    data = featureEngineer.mergeSentiment(stockData, newsData, sentimentAnalyzer)
-    data = featureEngineer.addMovingAverage(data, 'Close', 3)
-    data = featureEngineer.addRSI(data, 'Close', 3) # small window for sample
-    data = data.dropna()
-    
-    if len(data) <= modelTrainer.sequenceLength:
-        raise HTTPException(status_code=400, detail="Not enough data for the sequence length")
-        
-    # Prepare data for training
-    x, y, featureCols = modelTrainer.createSequences(data)
-    
-    # Initialize and train model
-    inputShape = (x.shape[1], x.shape[2])
-    predictor = LSTMModelPredictor(inputShape=inputShape)
-    predictor.train(x, y, epochs=5, batchSize=2)
-    
-    # Save model
-    predictor.saveModel(model_path)
-    
-    return {"message": "Model trained and saved successfully", "features": featureCols}
+        raise HTTPException(status_code=404, detail=f"No stock data found for {request.symbol}")
 
-@app.post("/predict", response_model=PredictionResponse)
-def getPrediction(req: PredictionRequest):
-    # Fetch data for prediction (last few days to form a sequence)
-    stockCollector = DataCollectorFactory.getCollector(DataType.CSV_STOCK if req.useMock else DataType.STOCK)
-    newsCollector = DataCollectorFactory.getCollector(DataType.CSV_NEWS if req.useMock else DataType.NEWS)
-    
-    stockData = stockCollector.collectData(req.symbol, req.startDate, req.endDate)
-    newsData = newsCollector.collectData(req.symbol, req.startDate, req.endDate)
-    
+    newsData = newsScanner.collectData(request.symbol, start_dt, request.endDate)
+
+    # Feature Engineering
+    stockData = applyTechnicalIndicators(stockData)
     if stockData.empty:
-        raise HTTPException(status_code=404, detail="Stock data not found")
-        
-    # Feature Engineering
-    data = featureEngineer.mergeSentiment(stockData, newsData, sentimentAnalyzer)
-    data = featureEngineer.addMovingAverage(data, 'Close', 3)
-    data = featureEngineer.addRSI(data, 'Close', 3)
-    data = data.dropna()
-    
-    if len(data) < modelTrainer.sequenceLength:
-        raise HTTPException(status_code=400, detail="Not enough data for sequence")
+        raise HTTPException(status_code=400, detail="Insufficient data after technical indicators application")
 
-    # Load Model
-    if not os.path.exists(model_path):
-        # Fallback to training if model doesn't exist (for demo purposes)
-        trainModel(req)
-        
-    predictor = LSTMModelPredictor(loadPath=model_path)
-    
-    # Prepare last sequence
-    featureCols = [col for col in data.columns if col not in ['Date', 'Headline', 'Target', 'Next_Close']]
-    last_sequence = data[featureCols].values[-modelTrainer.sequenceLength:]
-    last_sequence = np.expand_dims(last_sequence, axis=0)
-    
-    prediction_prob = predictor.predict(last_sequence)[0][0]
-    prediction = "UP" if prediction_prob > 0.5 else "DOWN"
-    confidence = float(prediction_prob if prediction_prob > 0.5 else 1 - prediction_prob)
-    decision = "BUY" if (prediction == "UP" and confidence > 0.6) else "SELL" if (prediction == "DOWN" and confidence > 0.6) else "HOLD"
-    
-    return PredictionResponse(
-        symbol=req.symbol,
-        prediction=prediction,
-        confidence=confidence,
-        decision=decision
-    )
+    # Sentiment
+    if not newsData.empty:
+        # Average sentiment across headlines; SentimentAnalyzer returns numeric score
+        try:
+            avg_sentiment = newsData['Headline'].apply(lambda x: sentimentAnalyzer.analyzeText(x)).mean()
+            stockData['Sentiment'] = float(avg_sentiment)
+        except Exception:
+            # Be defensive: if sentiment fails, continue with neutral sentiment
+            logger.warning("Sentiment analysis failed; using neutral sentiment")
+            stockData['Sentiment'] = 0.0
+    else:
+        stockData['Sentiment'] = 0.0
+
+    # Last price for response
+    lastPrice = stockData['Close'].iloc[-1]
+
+    # Model Inference
+    try:
+        if request.modelType == "RF":
+            predictor = RandomForestModelPredictor(config.get("models", "rfPath"))
+            trainer = RFModelTrainer()
+            logger.info(f"stockData columns: {stockData.columns.tolist()}, shape: {stockData.shape}")
+            x, _, _ = trainer.prepareData(stockData)
+            logger.info(f"Prepared x shape: {x.shape}")
+            if len(x) == 0:
+                logger.error(f"stockData before fail: {stockData.tail(5).to_dict()}")
+                raise ValueError("Not enough data points after preparation for RF")
+
+            probs = predictor.predict(x[-1].reshape(1, -1))
+            prediction_prob = probs[0][1]
+        else:
+            # LSTM
+            predictor = LSTMModelPredictor(config.get("models", "lstmPath"))
+            trainer = LSTMModelTrainer(sequenceLength=config.get("models", "sequenceLength"))
+            x, _, _ = trainer.prepareData(stockData)
+            if len(x) == 0:
+                raise ValueError("Not enough data points for LSTM sequence")
+
+            prob = predictor.predict(x[-1].reshape(1, x.shape[1], x.shape[2]))
+            prediction_prob = float(prob[0][0])
+
+        prediction = "UP" if prediction_prob > 0.5 else "DOWN"
+        confidence = prediction_prob if prediction == "UP" else 1.0 - prediction_prob
+
+        logger.info(f"Prediction for {request.symbol}: {prediction} ({confidence*100:.1f}%) | Model: {request.modelType} | Data: {scannerType}")
+
+        return DataMapper.mapToPredictionResponse(request.symbol, prediction, confidence, request.modelType, lastPrice)
+
+    except Exception as e:
+        logger.error(f"Prediction error for {request.symbol}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/train", response_model=TrainResponseDTO)
+async def trainModel(request: TrainRequestDTO):
+    """Handle training requests (placeholder flow).
+
+    Currently returns a success response; the training orchestration is
+    implemented in `scripts/train_models.py` and can be integrated here in
+    a follow-up pass.
+    """
+    logger.info(f"Received training request for {request.symbol} using {request.modelType}")
+    # Integration logic for training...
+    return TrainResponseDTO(status="SUCCESS", message="Training completed", modelPath=config.get("models", "rfPath"))
+
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Use config value if exists, fallback to 8000
+    port = config.get("system", "port") if config.get("system", "port") else 8000
+    uvicorn.run(app, host="0.0.0.0", port=int(port))

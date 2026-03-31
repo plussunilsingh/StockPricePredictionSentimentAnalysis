@@ -18,3 +18,17 @@ This document tracks the implementation progress of various components and featu
 | 12 | **Advanced ML Fallbacks** (XGBoost / Random Forest alternative models) | Yet to start |
 | 13 | **Real-time Streaming Pipeline** (For intraday updating) | Yet to start |
 | 14 | **Deployment** (Containerization with Docker / Hosting online) | Yet to start |
+
+
+## Pairwise humanization progress
+
+| Pair | Files processed | Status | Notes |
+| :--- | :--- | :--- | :--- |
+| 01 | `com/stockprediction/config/AppConfig.py`, `com/stockprediction/backend/model/best_model.py` | Done | Added docstrings, logging improvements, defensive checks, helper methods. Tests ran successfully. |
+| 02 | `com/stockprediction/backend/data/data_factory.py`, `com/stockprediction/backend/sentiment/sentiment_analyzer.py` | Done | Reworked factory wrapper and improved sentiment analyzer logging and docstrings. |
+| 03 | `com/stockprediction/backend/model/lstm_model.py`, `com/stockprediction/backend/model/trainer.py` | Done | Added docstrings, defensive checks, and clearer logging. |
+| 04 | `com/stockprediction/backend/utils/DataMapper.py`, `com/stockprediction/backend/pipeline/preprocessing.py` | Done | Added module docstrings, defensive checks, and clarified mapping behavior. |
+| 05 | `com/stockprediction/backend/__init__.py`, `com/stockprediction/__init__.py` | Done | Added package docstrings for clarity. |
+| 06 | `com/stockprediction/backend/dto/PredictionDTO.py`, `com/stockprediction/frontend/app.py` | Done | Documented DTOs and improved frontend defensive handling and docstring. |
+| 07 | `com/stockprediction/frontend/__init__.py`, `scripts/generate_data.py` | Done | Added package docstring and documented data generator. |
+| 08 | `scripts/train_models.py` | Done | Documented training script and added defensive checks. |

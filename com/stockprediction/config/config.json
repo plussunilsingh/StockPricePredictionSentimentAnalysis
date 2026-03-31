@@ -1,0 +1,36 @@
+{
+  "system": {
+    "dataMode": "MOCK",
+    "port": 8000,
+    "logFile": "logs/backend_enterprise.log"
+  },
+  "models": {
+    "lstmPath": "data/model.h5",
+    "rfPath": "data/rf_model.joblib",
+    "defaultModel": "RF",
+    "sequenceLength": 10
+  },
+  "symbols": {
+    "indices": [
+      { "label": "NIFTY 50 (NSEI)", "value": "NSEI" },
+      { "label": "SENSEX (BSESN)", "value": "BSESN" },
+      { "label": "NIFTY BANK", "value": "NSEBANK" },
+      { "label": "NIFTY IT", "value": "CNXIT" }
+    ],
+    "stocks": [
+      { "label": "RELIANCE (NSE)", "value": "RELIANCE.NS" },
+      { "label": "TCS (NSE)", "value": "TCS.NS" },
+      { "label": "INFY (NSE)", "value": "INFY.NS" },
+      { "label": "HDFC BANK (NSE)", "value": "HDFCBANK.NS" },
+      { "label": "ICICI BANK (NSE)", "value": "ICICIBANK.NS" },
+      { "label": "SBIN (NSE)", "value": "SBIN.NS" },
+      { "label": "Apple (AAPL)", "value": "AAPL" },
+      { "label": "Microsoft (MSFT)", "value": "MSFT" }
+    ]
+  },
+  "data": {
+    "mockDir": "data",
+    "historicalDays": 180,
+    "predictionWindow": 40
+  }
+}
