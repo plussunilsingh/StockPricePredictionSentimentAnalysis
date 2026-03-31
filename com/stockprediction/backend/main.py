@@ -189,6 +189,6 @@ async def trainModel(request: TrainRequestDTO):
 
 if __name__ == "__main__":
     import uvicorn
-    # Use config value if exists, fallback to 8000
-    port = config.get("system", "port") if config.get("system", "port") else 8000
+    # Respect BACKEND_PORT env var for platform deployment flexibility, fallback to config
+    port = os.environ.get("BACKEND_PORT", config.get("system", "port") or 8000)
     uvicorn.run(app, host="0.0.0.0", port=int(port))
