@@ -73,7 +73,7 @@ case "${1:-start}" in
 
     # Start streamlit on the port provided by the environment (Hugging Face uses $PORT)
     echo "Starting Streamlit on 0.0.0.0:$PORT"
-    streamlit run com/stockprediction/frontend/app.py --server.port=${PORT} --server.address=0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false &
+    streamlit run com/stockprediction/frontend/app.py --server.port=${PORT} --server.address=0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false --server.enableWebsocketCompression false --server.fileWatcherType none --browser.gatherUsageStats false &
     frontend_pid=$!
 
     # Wait briefly for frontend
