@@ -5,24 +5,52 @@ services:
       dockerfile: Dockerfile.slim
     image: stock-prediction-enterprise:slim
     environment:
-      - PORT=7860        # Streamlit external port inside the container
+      - PORT=7860
       - BACKEND_PORT=8000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_HOST=timescaledb
+      - DB_PORT=5432
+      - DB_USER=quant
+      - DB_PASS=quant123
+      - DB_NAME=market_data
     ports:
-      - "8005:7860"   # Map host 8005 to container 7860 for Streamlit UI (avoids conflicts)
-      - "8000:8000"   # Backend (optional, internal) - map if you want direct access
+      - "8005:7860"
+      - "8000:8000"
     volumes:
       - ./logs:/app/logs
       - ./data:/app/data:ro
       - ./wheelhouse:/app/wheelhouse:ro
+    depends_on:
+      - redis
+      - timescaledb
     restart: unless-stopped
     stdin_open: false
     tty: false
-    healthcheck:
-      test: ["CMD", "/app/healthcheck.sh"]
-      interval: 10s
-      timeout: 5s
-      retries: 20
-      start_period: 15s
 
-# Use 'docker compose up --build' to build and run the single container which
-# launches the backend (uvicorn) and the frontend (Streamlit) inside the same image.
+  redis:
+    image: redis:alpine
+    container_name: quant_redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  timescaledb:
+    image: timescale/timescaledb-ha:pg14-latest
+    container_name: quant_timescaledb
+    environment:
+      - POSTGRES_USER=quant
+      - POSTGRES_PASSWORD=quant123
+      - POSTGRES_DB=market_data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  redis_data:
+  pg_data:
