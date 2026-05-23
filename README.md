@@ -1,5 +1,5 @@
 ---
-title: "Stock Price Prediction"
+title: "Institutional Options Decision Engine"
 emoji: "📈"
 colorFrom: "blue"
 colorTo: "green"
@@ -10,117 +10,55 @@ app_file: "com/stockprediction/frontend/app.py"
 pinned: false
 ---
 
-# Stock Price Prediction & Sentiment Analysis System
+# Institutional-Style Market Intelligence & Options Decision Engine
 
-An end-to-end data-driven stock price prediction system that combines Technical Analysis (EMA, MACD, Bollinger Bands) with NLP-based Sentiment Analysis. Supporting major US and Indian market indices.
+This system is an **AI-assisted institutional-grade trading intelligence platform** for real-time options analysis. It combines derivatives data, market structure, sentiment analysis, and predictive modeling to generate explainable, risk-aware trading insights for intraday and short-term traders.
 
-## 🚀 Features & Benefits
+## 🚀 The TRUE Project Goal
+The real goal is NOT to randomly "predict stock prices". 
+The real goal is to build a real-time AI-assisted market decision system that helps identify high-probability options trading opportunities using live market structure, derivatives flow, sentiment, volatility, and AI-driven contextual reasoning.
 
-### Features
-- **Multi-Asset Support**: Predict for AAPL, MSFT, GOOGL and Indian Indices like NIFTY 50, SENSEX, NIFTY BANK, NIFTY IT.
-- **Hybrid Intelligence**: Combines technical indicators with market sentiment for holistic analysis.
-- **Robust Model Options**: Toggle between **LSTM (Recurrent Neural Network)** for sequence learning and **Random Forest** for stable classification.
-- **Interactive Dashboard**: Streamlit-based UI for real-time visualization and on-demand predictions.
-- **Advanced Indicators**: Built-in support for EMA, MACD, RSI, and Bollinger Bands.
-
-### Benefits
-- **Better Decision Making**: Signals are backed by both math (Technical) and context (Sentiment).
-- **Reduced Risk**: Multi-model verification helps identify high-confidence trades.
-- **Actionable Insights**: Clear BUY/SELL/HOLD recommendations with confidence percentages.
-- **Scalable Architecture**: Loosely coupled design allows easy integration of new models or data sources.
+The system acts as a **Market Analyst, Quant Assistant, and Trade Confidence Evaluator**.
 
 ---
 
-## 🏗 System Architecture
+## 🏛 The 5 Pillars of the Platform
 
-### 1. Overall System Integration Diagram
-```mermaid
-graph TD
-    A[Frontend: Streamlit Dashboard] <--> B[Backend API: FastAPI]
-    B --> C[Data Layer]
-    C --> D[Stock Collector: CSV/yfinance]
-    C --> E[News Collector: CSV/APIs]
-    B --> F[ML Pipeline]
-    F --> G[Feature Engineering]
-    F --> H[Model Layer]
-    H --> I[LSTM Model]
-    H --> J[Random Forest Model]
-    B --> K[Sentiment Analyzer: VADER]
-```
+### Pillar 1 — Market Data Infrastructure
+- **Purpose**: Low-latency reliable market ingestion.
+- **Includes**: Upstox WebSocket, NSE option chain, Tick data, OHLC candles, Open Interest, Volume, India VIX, PCR.
 
-### 2. Process Flow Diagram
-```mermaid
-sequenceDiagram
-    participant User
-    participant Dashboard
-    participant API
-    participant Model
-    
-    User->>Dashboard: Select Symbol & Model
-    Dashboard->>API: POST /predict (symbol, model)
-    API->>API: Fetch Stock & News Data
-    API->>API: Feature Engineering (EMA, RSI, Sentiment)
-    API->>Model: Run Prediction
-    Model-->>API: Result (UP/DOWN + Confidence)
-    API-->>Dashboard: JSON Result
-    Dashboard->>User: Display Signal & Chart
-```
+### Pillar 2 — Market Intelligence Engine
+- **Purpose**: Convert raw data into trading intelligence.
+- **Includes**: Greeks analysis, OI buildup detection, Support/resistance zones, Volatility spikes, Gamma exposure. This is the REAL alpha layer.
 
-### 3. Component Interaction Diagram
-```mermaid
-classDiagram
-    class Dashboard {
-        +selectSymbol()
-        +requestPrediction()
-    }
-    class FastAPI {
-        +trainModel()
-        +getPrediction()
-    }
-    class FeatureEngineer {
-        +addTechnicalIndicators()
-        +mergeSentiment()
-    }
-    class ModelStrategy {
-        <<interface>>
-        +train()
-        +predict()
-    }
-    
-    Dashboard ..> FastAPI : HTTP Requests
-    FastAPI --> FeatureEngineer : Preprocessing
-    FastAPI --> ModelStrategy : Inference
-    ModelStrategy <|-- LSTMModel
-    ModelStrategy <|-- RandomForestModel
-```
+### Pillar 3 — AI Prediction & Reasoning Layer
+- **Purpose**: AI-enhanced probabilistic forecasting predicting probability, NOT certainty.
+- **Includes**: FinBERT, TimeGPT, LSTM. 
 
-### 4. External System Interaction (Future Readiness)
-```mermaid
-graph LR
-    System[Stock Prediction System] -- API Keys --> YF[Yahoo Finance API]
-    System -- API Keys --> NEWS[NewsAPI.org]
-    System -- Local Files --> CSV[Data Archive]
-    User -- Browser --> System
-```
+### Pillar 4 — Decision & Signal Engine
+- **Purpose**: Convert intelligence into actionable setups.
+- **Outputs**: BUY CE, BUY PE, HOLD, AVOID TRADE, EXIT, RISK WARNING.
+- **Explainability**: Every signal must explain *why* it was generated (e.g., Confidence 81% due to OI buildup + Bullish PCR).
+
+### Pillar 5 — Trader Interface Layer
+- **Purpose**: Human-readable command center.
+- **Includes**: Live Streamlit dashboard showing real-time charts, options chains, PCR heatmaps, and signal timelines.
 
 ---
 
-## 🛠 Installation & Usage
+## 🚧 Staged Evolution Plan
 
-The system is managed via the enterprise `manage.sh` script:
+We avoid overengineering history and focus on intraday regime behavior.
+1. **Phase 1: Stable Data Foundation** - Reliable WebSocket ingestion.
+2. **Phase 2: Options Intelligence** - Greeks, OI, and PCR tracking.
+3. **Phase 3: Rule-Based Signals** - VWAP and Volatility logic (before AI).
+4. **Phase 4: AI Layer** - Enhancing signal quality probabilistically.
+5. **Phase 5: Explainable UI** - Live Dashboard deployment.
 
-1. **Start System**: `./manage.sh start`
-2. **Access Dashboard**: `http://localhost:8005`
-3. **Backend API Docs**: `http://localhost:8000/docs`
-4. **View Logs**: `./manage.sh logs`
-5. **Stop System**: `./manage.sh stop`
-6. **Check Status**: `./manage.sh status`
+## 📂 Project Documentation
 
----
-
-## 📂 Project Structure
-- `com.stockprediction.backend`: FastAPI service and ML implementations.
-- `com.stockprediction.frontend`: Streamlit dashboard.
-- `data/`: CSV datasets for stocks and news.
-- `scripts/`: Data generation and utility scripts.
-- `tests/`: Automated backend verification tests.
+All system documentation and project requirements are maintained in the `docs/` directory:
+- `docs/requirements.md` - Core project requirements and trading goals.
+- `docs/context_graph.json` - The LLM-readable system graph.
+- `docs/implementation_plan.md` - Technical roadmap and actionable tasks.

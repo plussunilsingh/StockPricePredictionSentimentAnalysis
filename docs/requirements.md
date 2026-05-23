@@ -1,22 +1,30 @@
-# Project Requirements: Real-Time Options Trading Setup
+# Project Vision & Requirements: Institutional-Style Options Decision Engine
 
-## Core Objective
-Transform the system from a general stock price predictor into a **daily options trading setup** tailored specifically for analyzing the market and identifying optimal Call/Put entry and exit points (Buy/Sell).
+## Step 1 — The TRUE Project Goal
+**Primary Goal:** Build a real-time AI-powered options trading intelligence system capable of analyzing live market data, options flow, volatility, sentiment, and historical market behavior to generate high-confidence trading insights, trade setups, and risk-aware entry/exit signals for intraday and short-term options trading.
 
-## Key Requirements
+## Step 2 — What This System Actually Does
+The system acts as a:
+- Market analyst
+- Quant assistant
+- Options flow analyzer
+- AI reasoning engine
+- Signal assistant
+- Trade confidence evaluator
 
-1. **No Mock Data (100% Real Data)**:
-   - All sentiment, pricing, and options data must be fetched from real sources. Mock data logic will be completely removed.
+*(It is NOT a magical "future predictor")*
 
-2. **Daily Options Trading Focus (Call vs Put)**:
-   - The application must specialize in evaluating Options Contracts.
-   - Must provide explicit Buy/Sell signals for Call and Put options based on deep technical and sentiment analysis.
+## Step 3 — Core System Mission
+The mission of this project is to combine institutional-grade market data, options analytics, historical context, real-time sentiment, and AI forecasting models into a unified trading intelligence platform that assists traders in making fast, informed, and risk-aware decisions during live market hours.
 
-3. **Real-Time Data Integration & Best-in-Class Sources**:
-   - To achieve superior market control, we will prioritize the absolute best, low-latency data sources.
-   - For Indian Markets (NSE): Integrate with **Upstox API** (for execution/retail feeds) and evaluate institutional-grade tick data providers like **TrueData** or **Global Datafeeds** if millisecond precision is required.
-   - The system must act as a live "trader setup", continuously analyzing the market during trading hours without data lag.
+## Step 4 — The 5 Pillars of the Platform
+1. **Pillar 1: Market Data Infrastructure** - Low-latency reliable market ingestion (Upstox WebSocket, NSE option chain, Tick data, OHLC candles, Open Interest, Volume, India VIX, PCR).
+2. **Pillar 2: Market Intelligence Engine** - Convert raw data into trading intelligence (Greeks analysis, OI buildup detection, Support/resistance zones, volatility spikes, gamma exposure).
+3. **Pillar 3: AI Prediction & Reasoning Layer** - AI-enhanced probabilistic forecasting predicting probability, NOT certainty (LSTM, TimeGPT, FinBERT, XGBoost).
+4. **Pillar 4: Decision & Signal Engine** - Convert intelligence into actionable setups with explainable reasoning (e.g., Signal: BUY NIFTY 22500 CE, Confidence: 81%, Reason: Strong OI buildup).
+5. **Pillar 5: Trader Interface Layer** - Human-readable command center (Streamlit initially, React later) showing live charts, options chains, PCR heatmaps, and signal timelines.
 
-4. **Predictive Analytics & Deep Analysis**:
-   - Continue utilizing the 100-year historical data context and advanced LLMs (FinBERT, TimeGPT).
-   - Merge long-term historical context with real-time options data to output high-confidence trade signals.
+## Step 5 — Architectural Directives
+- **Avoid Overengineering History**: Focus on the last 3 months, last 30 days, intraday structure, and volatility regimes rather than pure 100-year deep historical modeling. Intraday options depend on live liquidity and order flow.
+- **Rule-Based Before AI**: Establish rule-based signals (breakouts, OI shifts, VWAP logic) before layering on complex AI. AI should *enhance* signal quality, not replace core logic.
+- **Explainability**: The system must explain *WHY* a signal was generated. Institutional systems require explainability.
