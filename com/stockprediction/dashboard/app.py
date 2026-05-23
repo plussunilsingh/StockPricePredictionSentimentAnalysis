@@ -9,6 +9,8 @@ import pandas as pd
 from com.stockprediction.backend.db_client import LiveDBClient
 from com.stockprediction.backend.oi_analyzer import OIAnalyzer
 
+from datetime import datetime, timedelta
+
 st.set_page_config(page_title="Institutional Options Engine", layout="wide")
 
 # Add a manual refresh button as requested to save compute
@@ -20,19 +22,48 @@ with col_refresh:
     if st.button("🔄 Fetch Live Market Data"):
         st.rerun()
 
-async def fetch_live_dashboard_data():
+st.sidebar.header("📊 Chart Filters")
+time_filter = st.sidebar.selectbox(
+    "Select Time Range", 
+    ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "Custom Range"]
+)
+
+start_date, end_date = None, None
+if time_filter == "Custom Range":
+    date_range = st.sidebar.date_input("Select Date Range", value=(datetime.now() - timedelta(days=7), datetime.now()))
+    if len(date_range) == 2:
+        start_date, end_date = date_range
+        # Convert to datetime at midnight and 23:59:59
+        start_date = datetime.combine(start_date, datetime.min.time())
+        end_date = datetime.combine(end_date, datetime.max.time())
+else:
+    end_date = datetime.now()
+    if time_filter == "1 Day":
+        start_date = end_date - timedelta(days=1)
+    elif time_filter == "1 Week":
+        start_date = end_date - timedelta(weeks=1)
+    elif time_filter == "1 Month":
+        start_date = end_date - timedelta(days=30)
+    elif time_filter == "3 Months":
+        start_date = end_date - timedelta(days=90)
+    elif time_filter == "6 Months":
+        start_date = end_date - timedelta(days=180)
+    elif time_filter == "1 Year":
+        start_date = end_date - timedelta(days=365)
+
+async def fetch_live_dashboard_data(start_time, end_time):
     client = LiveDBClient()
     await client.connect()
     
     # Fetch actual real-time data
     spot = await client.get_latest_spot("ANGELONE:26000")
-    candles_df = await client.get_latest_candles("ANGELONE:26000", limit=20)
+    candles_df = await client.get_candles_by_timerange("ANGELONE:26000", start_time, end_time)
     health = await client.get_system_health()
     
     return spot, candles_df, health
 
 # Fetch data via asyncio
-spot_price, candles_df, sys_health = asyncio.run(fetch_live_dashboard_data())
+spot_price, candles_df, sys_health = asyncio.run(fetch_live_dashboard_data(start_date, end_date))
 
 st.markdown("---")
 
@@ -62,13 +93,13 @@ with colA:
     else:
         st.warning("No live ticks flowing. Signals suspended.")
     
-    st.subheader("Live OHLC Chart (PostgreSQL/TimescaleDB)")
+    st.subheader(f"Live OHLC Chart ({time_filter})")
     if not candles_df.empty:
         # Streamlit line_chart can plot close prices easily
         chart_data = candles_df[['time', 'close']].set_index('time')
         st.line_chart(chart_data)
     else:
-        st.info("Waiting for the OhlcAggregator to close the first 1-minute candle...")
+        st.info(f"No OHLC candles found in PostgreSQL for the selected range ({time_filter}). Make sure the OhlcAggregator is running and ingesting ticks.")
 
 with colB:
     st.subheader("Options Chain Snapshot")

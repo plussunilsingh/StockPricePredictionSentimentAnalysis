@@ -55,31 +55,33 @@ class LiveDBClient:
             
         return 0.0
 
-    async def get_latest_candles(self, instrument: str = "ANGELONE:26000", limit: int = 50) -> pd.DataFrame:
-        """Fetches the latest aggregated OHLC candles from TimescaleDB."""
+    async def get_candles_by_timerange(self, instrument: str, start_time, end_time=None) -> pd.DataFrame:
+        """Fetches aggregated OHLC candles from TimescaleDB within a specific time range."""
         if not self.pg_pool:
             return pd.DataFrame()
+            
+        if end_time is None:
+            from datetime import datetime
+            end_time = datetime.now()
             
         query = """
         SELECT time, open, high, low, close, volume 
         FROM candles_1m 
-        WHERE instrument = $1 
-        ORDER BY time DESC 
-        LIMIT $2
+        WHERE instrument = $1 AND time >= $2 AND time <= $3
+        ORDER BY time ASC
         """
         
         try:
             async with self.pg_pool.acquire() as connection:
-                records = await connection.fetch(query, instrument, limit)
+                records = await connection.fetch(query, instrument, start_time, end_time)
                 
             if not records:
                 return pd.DataFrame()
                 
             df = pd.DataFrame([dict(r) for r in records])
-            # Reverse to maintain chronological order for charting
-            df = df.sort_values(by="time").reset_index(drop=True)
             return df
-        except Exception:
+        except Exception as e:
+            print(f"[!] DBClient fetch error: {e}")
             return pd.DataFrame()
 
     async def get_system_health(self) -> Dict[str, str]:
