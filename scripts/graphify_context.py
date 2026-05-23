@@ -79,5 +79,7 @@ def build_context_graph(project_root: str, output_path: str):
 
 if __name__ == "__main__":
     PROJECT_ROOT = "/Users/suniltomar/Desktop/workspace/StockPricePredictionSentimentAnalysis"
-    OUTPUT_FILE = os.path.join(PROJECT_ROOT, "context_graph.json")
+    DOCS_DIR = os.path.join(PROJECT_ROOT, "docs")
+    os.makedirs(DOCS_DIR, exist_ok=True)
+    OUTPUT_FILE = os.path.join(DOCS_DIR, "context_graph.json")
     build_context_graph(PROJECT_ROOT, OUTPUT_FILE)
