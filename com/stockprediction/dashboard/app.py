@@ -1,3 +1,8 @@
+import sys
+import os
+# Add the project root to the python path so Streamlit can find the 'com' module
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
+
 import asyncio
 import streamlit as st
 import pandas as pd
