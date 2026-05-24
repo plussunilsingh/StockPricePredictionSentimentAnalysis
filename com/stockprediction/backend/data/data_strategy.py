@@ -43,8 +43,9 @@ class CsvStockScanner(DataScanner):
             # Ensure Date column is datetime for consistent filtering
             if 'Date' in df.columns:
                 df['Date'] = pd.to_datetime(df['Date'])
-                mask = (df['Date'] >= startDate) & (df['Date'] <= endDate)
-                return df.loc[mask]
+                # Offline mock data ages out over time (e.g. mock ends in March 2026 but current date is May 2026).
+                # To prevent model crashes (LSTM sequence length / RF features), always return the last 150 rows for mock.
+                return df.tail(150).reset_index(drop=True)
             return df
         logger.warning(f"Mock stock data file not found: {filePath}")
         return pd.DataFrame() if pd is not None else None

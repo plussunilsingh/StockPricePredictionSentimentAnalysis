@@ -106,9 +106,9 @@ async def getPrediction(request: PredictionRequestDTO):
     stockScanner = DataScannerFactory.getStockScanner(scannerType)
     newsScanner = DataScannerFactory.getNewsScanner(scannerType)
 
-    # Fetch Data with window for indicators
+    # Fetch Data with larger window (120 days) to ensure enough trading days for LSTM sequences and technical indicators
     end_dt = pd.to_datetime(request.endDate)
-    start_dt = (end_dt - timedelta(days=60)).strftime('%Y-%m-%d')
+    start_dt = (end_dt - timedelta(days=120)).strftime('%Y-%m-%d')
     stockData = stockScanner.collectData(request.symbol, start_dt, request.endDate)
 
     if stockData.empty:
